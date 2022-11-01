@@ -30,9 +30,38 @@ app.listen(port, () => {
   console.log(`App listening at http://localhost:${port}`)
 })
 
-
 app.get('/places', corsMiddleware, roleMiddleware, async (req: Request, res: Response) => {
   const response = await controllers.place.getPlaces(req)
+  res.status(response.status).send(response.body)
+})
+
+app.get('/myplaces', corsMiddleware, authMiddleware, async (req: Request, res: Response) => {
+  const response = await controllers.place.getMyPlaces(req)
+  res.status(response.status).send(response.body)
+})
+
+app.get('/rooms', corsMiddleware, async (req: Request, res: Response) => {
+  const response = await controllers.room.getRooms(req)
+  res.status(response.status).send(response.body)
+})
+
+app.patch('/room', corsMiddleware, authMiddleware, async (req: Request, res: Response) => {
+  const response = await controllers.room.editRoom(req)
+  res.status(response.status).send(response.body)
+})
+
+app.post('/room', corsMiddleware, authMiddleware, async (req: Request, res: Response) => {
+  const response = await controllers.room.addRoom(req)
+  res.status(response.status).send(response.body)
+})
+
+app.get('/features', corsMiddleware, async (req: Request, res: Response) => {
+  const response = await controllers.feature.getFeatures(req)
+  res.status(response.status).send(response.body)
+})
+
+app.get('/featureslist', corsMiddleware, async (req: Request, res: Response) => {
+  const response = await controllers.feature.getFeaturesList()
   res.status(response.status).send(response.body)
 })
 
@@ -141,3 +170,7 @@ app.delete('/place', corsMiddleware, authMiddleware, async (req: Request, res: R
   res.status(response.status).send(response.body)
 })
 
+app.delete('/room', corsMiddleware, authMiddleware, async (req: Request, res: Response) => {
+  const response = await controllers.room.deleteRoom(req)
+  res.status(response.status).send(response.body)
+})

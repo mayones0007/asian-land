@@ -1,17 +1,17 @@
 <template>
   <div class="search" @click="toggleSearchList">
-    <input class="search__input" :class="{'search__input-active': listFullSize}" type="text" placeholder="Куда вы собираетесь?" v-model="input">
+    <input class="search__input" :class="{'search__input-active': listFullSize}" type="text" placeholder="Where are you going?" v-model="input">
     <div v-if="listFullSize" class="search__list">
       <div v-for="(region, index) in regions" :key="region" class="search__list-item" @click="setSelectedRegion(index)">
         <div>{{index}}</div>
         <div class="item__amount">{{placesAmountText(region)}}</div>
       </div>
       <div class="search__list-item" @click="setSelectedRegion('')">
-        <div>Смотреть все</div>
+        <div>Show all</div>
       </div>
     </div>
     <MyButton 
-      title="Поиск" 
+      title="Search" 
       :noLeftRadius="true"
     />
   </div>
@@ -48,7 +48,7 @@ export default {
       this.input = ''
     },
     placesAmountText(number) {
-      return numWord(number, ['место', 'места', 'мест'])
+      return numWord(number, ['object', 'objects'])
     },
     toggleSearchList() {
       this.listFullSize = !this.listFullSize

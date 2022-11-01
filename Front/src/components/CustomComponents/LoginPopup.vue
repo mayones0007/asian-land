@@ -1,13 +1,13 @@
 <template>
   <div class="background" @click.self="setLoginPopup">
     <div class="login-window"  :class="{'login-window-mobile': !isDesktop}" @keyup.esc.stop="setLoginPopup" @keyup.enter.stop="login">
-      <h2>Вход</h2>
+      <h2>Sign in</h2>
       <div class="button-close" @click="setLoginPopup"/>
       <div class="form">
-        <input class="form__input-text" ref="name" v-model="name" type="text" placeholder="Логин" tabindex="-1">
-        <input class="form__input-text" v-model="password" type="password" placeholder="Пароль">
-        <MyButton @click="login" title="Войти"/>
-        <div>Впервые у нас? <router-link :to="{name: $options.routeNames.registration}" @click="setLoginPopup">Зарегистрируйтесь</router-link></div>
+        <input class="form__input-text" ref="name" v-model="email" type="text" placeholder="E - mail" tabindex="-1">
+        <input class="form__input-text" v-model="password" type="password" placeholder="Password">
+        <MyButton @click="login" title="Log In"/>
+        <div>Not registered yet? <router-link :to="{name: $options.routeNames.registration}" @click="setLoginPopup">Register</router-link></div>
       </div>
     </div>
   </div>
@@ -23,7 +23,7 @@ export default {
     MyButton,
   },
   data: () => ({
-    name: '',
+    email: '',
     password: ''
   }),
   computed: {
@@ -36,7 +36,7 @@ export default {
       this.$store.commit('setLoginPopup')
     },
     login(){
-      this.$store.dispatch('login', {name:this.name, password:this.password})
+      this.$store.dispatch('login', {email:this.email, password:this.password})
     },
   },
   mounted() {
@@ -56,6 +56,7 @@ export default {
   top: 50%;
   left: 50%;
   background-color: white;
+  width: 340px;
   border-radius: 10px;
   padding: 30px;
   transform:translate(-50%,-50%);

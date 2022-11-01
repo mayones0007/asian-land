@@ -2,28 +2,32 @@
   <div class="header">
     <router-link :to="{name: $options.routeNames.places}" class="logo">
       <img class="logo__icon" :src="`${$baseUrl}/icons/logo.svg`" alt="Маршрутка">
-      <div class="logo__name">Marshrutka</div>
+      <div class="logo__name">asian.land</div>
     </router-link>
     <Search
       v-if="isDesktop || isStartPage"
       :class="{'search-form-mobile': !isDesktop}"
     />
-    <div :class="{'user-menu': isDesktop, 'user-menu-mobile': !isDesktop}" @click="toggleMenuSize" @click.self="toggleMenuSize">
+    <div v-if="user.name" :class="{'user-menu': isDesktop, 'user-menu-mobile': !isDesktop}" @click="toggleMenuSize" @click.self="toggleMenuSize">
       <Avatar
-        :userName="userInfo.name"
-        :userImg="`${$baseUrl}/avatars/`+ userInfo.avatar"
+        :userName="user.name"
+        :userImg="`${$baseUrl}/avatars/`+ user.avatar"
         :hideName="!isDesktop"
       />
       <img v-if="isLogIn" :src="`${$baseUrl}/icons/arrow.png`" alt="arrow" class="user-menu__arrow" :class="{'user-menu__arrow-down': isFullMenuSize && !isDesktop}">
       <div class="user-menu__dropdown-content" v-if="isLogIn && isFullMenuSize">
-        <router-link :to="{name: $options.routeNames.myRoute}" class="dropdown-content__link">Мой маршрут</router-link>
-        <router-link :to="{name: $options.routeNames.myFavorites}" class="dropdown-content__link">Избранное</router-link>
-        <router-link :to="{name: $options.routeNames.newPlace}" class="dropdown-content__link">Добавить место</router-link>
-        <router-link :to="{name: $options.routeNames.settings}" class="dropdown-content__link">Настройки</router-link>
-        <div class="dropdown-content__link" @click="setLoginPopup">Выйти</div>
+        <router-link :to="{name: $options.routeNames.myFavorites}" class="dropdown-content__link">My Favorites</router-link>
+        <router-link :to="{name: $options.routeNames.newPlace}" class="dropdown-content__link">My Objects</router-link>
+        <router-link :to="{name: $options.routeNames.settings}" class="dropdown-content__link">Settings</router-link>
+        <div class="dropdown-content__link" @click="setLoginPopup">Log out</div>
       </div>
-      <div class="login-panel__button-login" @click="setLoginPopup" v-if="!isLogIn">Войти</div>
     </div>
+    <MyButton
+      v-if="!isLogIn"
+      title="Sign in"
+      @click="setLoginPopup"
+      icon="login.svg"
+    />
   </div>
 </template>
 
@@ -31,12 +35,14 @@
 import { router, routeNames } from '../../router'
 import Avatar from './Avatar.vue'
 import Search from './Search.vue'
+import MyButton from './MyButton.vue'
 import { isDesktop } from '../../services/screenSize.service'
 export default {
   name: 'Header',
   components: {
     Avatar,
-    Search
+    Search,
+    MyButton
   },
   routeNames,
   data: () => ({
@@ -49,15 +55,6 @@ export default {
     },
     isLogIn(){
       return !!this.user.name
-    },
-    userInfo() {
-      return {
-        name: this.user.name ? this.user.name : 'Неопознанный турист',
-        avatar: this.user.avatar ? this.user.avatar : 'tourist.png'
-      }
-    },
-    isAdmin(){
-      return this.user.name === "Admin"
     },
     isDesktop(){
       return this.$store.state.appModule.isDesktop
@@ -147,7 +144,6 @@ export default {
 }
 
 .login-panel__button-login {
-  border-left: solid rgba(100, 100, 100, 0.5) 2px;
   cursor: pointer;
   padding: 10px;
 }

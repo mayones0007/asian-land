@@ -4,12 +4,12 @@
     <div class="rewiew-messages">
       <div class="rewiew-message" v-for='review in currentReviews' :key="review">
         <Avatar
-          :userName="review.name"
+          :userName="review.firstName"
           :userImg="`${$baseUrl}/avatars/`+ review.avatar"
         />
         <div class="review-date"  :class="{'review-date-horizontal': horizontal}">
           {{prepareDate(review.createdAt)}}
-          <div>
+          <div class="raiting">
             <img
               v-for='star in review.raiting' :key="'star'+star"
               :src="`${$baseUrl}/icons/star.svg`"
@@ -43,16 +43,16 @@ export default {
       return this.$store.state.placesModule.reviews
     },
     isAdmin() {
-      return this.$store.state.userModule.user.name === "Admin"
+      return this.$store.state.userModule.user.role === "admin"
     },
     isDesktop(){
       return this.$store.state.appModule.isDesktop
     },
     titleText () {
       if (this.currentReviews.length === 0) {
-        return "Оставьте первый отзыв"
+        return "leave the first review"
       } else {
-        return numWord(this.currentReviews.length, ['отзыв', 'отзыва', 'отзывов'])
+        return numWord(this.currentReviews.length, ['review', 'reviews'])
       }
     },
   },
@@ -81,7 +81,7 @@ export default {
   grid-template-columns: 150px 1fr;
   grid-template-rows: 50px 1fr;
   text-align: start;
-  font-weight: 100;
+  font-weight: 300;
   padding: 15px;
   background-color:aliceblue;
   border-radius: 5px;
@@ -131,5 +131,8 @@ export default {
   right: 25px;
   top: 25px;
   cursor: pointer;
+}
+.raiting {
+  display: flex;
 }
 </style>

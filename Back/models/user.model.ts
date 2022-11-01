@@ -1,21 +1,19 @@
 import { knexService } from '../db/index'
 
-interface User {
+interface User extends NewUser{
   id: number,
-  name: string,
-  email: string,
-  password: string,
-  avatar: string,
-  role: string,
+  updatedAt: Date,
 }
 
 interface NewUser {
-  name: string,
+  firstName: string,
+  lastName: string,
   email: string,
+  phone: string,
   password: string,
   avatar: string,
-  createdAt: Date,
   role: string,
+  createdAt: Date,
 }
 
 interface editUser {

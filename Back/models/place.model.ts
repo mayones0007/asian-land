@@ -31,6 +31,7 @@ export class PlaceModel {
   }
   async getPlaces(role: string): Promise<Place[]> {
     return await knexService('places').leftJoin('pictures', 'places.id', 'pictures.placeId')
+    .where('roomId', null)
     .select('places.*', 'pictures.fileName as picture')
     .groupBy('places.id')
     .modify(function(query) {
@@ -42,6 +43,21 @@ export class PlaceModel {
       return places
     })
   }
+
+  async getMyPlaces(dbQuery: DbQuery, role: string): Promise<Place[]> {
+    return await knexService('places').leftJoin('pictures', 'places.id', 'pictures.placeId')
+      .select('places.*', 'pictures.fileName as picture')
+      .groupBy('places.id')
+      .modify(function (query) {
+        if (role !== 'admin') {
+          query.where(dbQuery)
+        }
+      })
+      .then((places) => {
+        return places
+      })
+  }
+  
   async addPlace(place: NewPlace): Promise<number> {
     return await knexService('places').insert(place)
       .then((id) => {
@@ -60,6 +76,8 @@ export class PlaceModel {
     promises.push(knexService('pictures').where({ placeId: id }).del())
     promises.push(knexService('reviews').where({ placeId: id }).del())
     promises.push(knexService('routes').where({ placeId: id }).del())
+    promises.push(knexService('features').where({ placeId: id }).del())
+    promises.push(knexService('rooms').where({ placeId: id }).del())
     Promise.all(promises)
   }
 }

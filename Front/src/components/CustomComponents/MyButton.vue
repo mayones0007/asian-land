@@ -1,7 +1,7 @@
 <template>
   <button
     class="button"
-    :class="{'button-disabled': isDisabled, 'button-no-left-radius': noLeftRadius,'button-red': isRed}"
+    :class="{'button-disabled': isDisabled, 'button-no-left-radius': noLeftRadius,'button-red': isRed,'button-red-empty': isRedEmpty}"
     :disabled="isDisabled">
     <div class="button__content" :class="{'button__content-vertical': vertical}">
       <img v-if="icon" :src="`${$baseUrl}/icons/${icon}`" alt="icon">
@@ -13,7 +13,7 @@
 <script>
 export default {
   name: 'MyButton',
-  props: ['title', 'icon', 'isDisabled', 'noLeftRadius', 'isRed', 'vertical'],
+  props: ['title', 'icon', 'isDisabled', 'noLeftRadius', 'isRed', 'vertical','isRedEmpty'],
 }
 </script>
 
@@ -38,7 +38,11 @@ export default {
   &-red {
     background-color: rgb(255, 108, 108);
   }
-
+  &-red-empty {
+    background-color: white;
+    color: rgb(255, 108, 108);
+    border: solid rgb(255, 108, 108) 1px;
+  }
   &-no-left-radius {
     border-radius: 0 5px 5px 0;
   }

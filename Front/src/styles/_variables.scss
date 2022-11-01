@@ -14,6 +14,7 @@
 
 @mixin input {
   border: solid rgb(240, 240, 240) 1px;
+  box-sizing: border-box;
   border-radius: 5px;
   height: 35px;
   padding: 0 10px;

@@ -18,7 +18,7 @@ interface DbQuery {
 
 export class ReviewModel {
   async getReviews(dbQuery: DbQuery): Promise<Review[]> {
-    return await knexService('reviews').where(dbQuery).join('users', 'reviews.userId', '=', 'users.id').select('users.name', 'reviews.id', 'reviews.text', 'reviews.createdAt', 'users.avatar', 'reviews.raiting')
+    return await knexService('reviews').where(dbQuery).join('users', 'reviews.userId', '=', 'users.id').select('users.firstName', 'reviews.id', 'reviews.text', 'reviews.createdAt', 'users.avatar', 'reviews.raiting')
       .then((reviews) => {
         return reviews
       })

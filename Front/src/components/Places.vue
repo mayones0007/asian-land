@@ -13,36 +13,32 @@
     />
     <div v-if="isFullSizeFilters | isDesktop" class="places__filters" :class="{'places__filters-mobile': !isDesktop}">
       <Select
-        :name="'Категория'"
+        :name="'Category'"
         :fieldName="'category'"
       />
-      <Select
-        :name="'Сложность'"
-        :fieldName="'difficulty'"
-      />
-      <Select
-        :name="'На чем'"
-        :fieldName="'way'"
-      />
     </div>
-    <div class="places__gallery">
-      <PlacePreview
+    <div class="page">
+      <RoutePoint
         v-for="place in filteredPlaces"
-        :key="`place + ${place.id}`"
+        :showHeart="true"
+        :key="place.id"
+        :FullSize="true"
         :routePoint="place"
-        :ShowText="true"
+        buttonIcon="house.svg"
+        buttonText="Book It"
       />
     </div>
   </div>
 </template>
 
 <script>
-import PlacePreview from './CustomComponents/PlacePreview.vue'
+import RoutePoint from './CustomComponents/RoutePoint.vue'
 import Select from './CustomComponents/Select.vue'
 import MyButton from './CustomComponents/MyButton.vue'
+
 export default {
   components: {
-    PlacePreview,
+    RoutePoint,
     Select,
     MyButton,
   },
@@ -62,7 +58,7 @@ export default {
       if (this.selectedRegion) {
         return {image: this.filteredPlaces[0].picture, text: this.selectedRegion}
       } else {
-        return {image: "chelovek-gora.jpeg", text: "Построй свой маршрут"}
+        return {image: "chelovek-gora.webp", text: "Find your best place"}
       }
     },
     isDesktop(){
@@ -81,6 +77,9 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.page {
+  margin: 3%;
+}
 
 .places__gallery {
   display: flex;
@@ -126,6 +125,10 @@ export default {
   }
   &-button {
     margin-top: 20px;
+  }
+  .calendar {
+    width: 230px;
+    z-index: 1;
   }
 }
 </style>

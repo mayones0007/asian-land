@@ -5,20 +5,27 @@ interface DbQuery {
   [key: string]: any
 }
 
+export interface Picture {
+  id: number,
+  placeId: number,
+  fileName: string,
+  roomId: number | null,
+}
+
 export class PictureModel {
-  async getPictures(dbQuery: DbQuery): Promise<string[]> {
-    return await knexService('pictures').where(dbQuery).select('fileName')
+  async getPictures(dbQuery: DbQuery): Promise<Picture[]> {
+    return await knexService('pictures').where(dbQuery)
       .then((pictures) => {
-        return pictures.map(item => item.fileName)
+        return pictures
       })
   }
-  async savePictures(placeId: number, files: UploadedFile | UploadedFile[]): Promise<void> {
+  async savePictures(placeId: number, roomId: number | null, files: UploadedFile | UploadedFile[]): Promise<void> {
     if (files instanceof Array) {
       files.forEach(file => {
-        knexService('pictures').insert({ placeId, fileName: file.name }).catch((err) => console.log(err))
+        knexService('pictures').insert({ placeId, roomId, fileName: file.name }).catch((err) => console.log(err))
       })
     } else {
-      knexService('pictures').insert({ placeId, fileName: files.name }).catch((err) => console.log(err))
+      knexService('pictures').insert({ placeId, roomId, fileName: files.name }).catch((err) => console.log(err))
     }
   }
   async deletePictures(fileName: DbQuery): Promise<void> {

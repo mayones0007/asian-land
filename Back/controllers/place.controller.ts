@@ -13,6 +13,15 @@ export class PlaceController {
       body: places,
     }
   }
+  async getMyPlaces(req: Request): Promise<AppResponse<Place[]>> {
+    const user = req.user.userId
+    const role = req.user.role
+    const places = await models.place.getMyPlaces({ user }, role)
+    return {
+      status: 200,
+      body: places,
+    }
+  }
   async getPlace(req: Request): Promise<AppResponse<Place>> {
     const id = req.query.id
     const place = await models.place.getPlace({ id })
@@ -25,9 +34,11 @@ export class PlaceController {
     if (req.files) {
       const place = JSON.parse(req.body.place)
       const files = req.files.images
+      const roomId = null
+      place.user = req.user.userId
       const placeId = await models.place.addPlace(place)
       fileService.saveFiles('img', files)
-      models.picture.savePictures(placeId, files)
+      models.picture.savePictures(placeId, roomId, files)
       return {
         status: 200,
         body: { message: 'Место добавлено' },
@@ -45,7 +56,7 @@ export class PlaceController {
     if (req.files) {
       const files = req.files.images
       fileService.saveFiles('img', files)
-      models.picture.savePictures(place.id, files)
+      models.picture.savePictures(place.id, null, files)
     }
     return {
       status: 200,
@@ -54,7 +65,7 @@ export class PlaceController {
   }
   async deletePlace(req: Request): Promise<AppResponse> {
     const id = req.query.id as string
-    const pictures = await models.picture.getPictures({ placeId: id })
+    const pictures = await (await models.picture.getPictures({ placeId: id })).map(picture => picture.fileName)
     fileService.deleteFiles('img', pictures)
     await models.place.deletePlace(id)
     return {

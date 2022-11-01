@@ -1,43 +1,54 @@
 <template>
   <div v-if="currentPlace" class="page" :class="{'page-mobile': !isDesktop}">
-    <Gallery/>  
-    <SavePanel/>
-    <p class="description-text">
-      {{currentPlace.description}}
-    </p>
-    <div class="review">
-      <textarea 
-        class="review__input"
-        type="text"
-        placeholder="Ваш отзыв"
-        v-model="inputValue"
+    <div>
+      <Gallery
+        :pictures="this.currentPictures"
       />
-      <div class="review__buttons" :class="{'review__buttons-mobile': !isDesktop}">
-        <div class="raiting">Ваша оценка
-          <img
-            v-for='star in 5' :key="'star'+star"
-            :src="`${$baseUrl}/icons/star.svg`"
-            alt="star"
-            class="review__buttons-star"
-            :class="{'review__buttons-star--hovered': star <= starHovered}"
-            @click="onStarHover(star)"
-          >
-        </div>
-        <MyButton
-          title="Отправить отзыв"
-          :isDisabled="!this.inputValue || !this.starHovered"
-          :icon="'send.svg'"
-          @click="saveRewiew"
+      <SavePanel v-if="!isDesktop"/>
+      <div class="description-text">{{currentPlace.description}}</div>
+      <h2>Rooms</h2>
+      <Rooms
+        v-for="room in currentRooms"
+        :key="room.id"
+        :room="room"
+        buttonText="Reserve"
+      />
+      <div class="review">
+        <textarea 
+          class="review__input"
+          type="text"
+          placeholder="Review text"
+          v-model="inputValue"
         />
+        <div class="review__buttons" :class="{'review__buttons-mobile': !isDesktop}">
+          <div class="raiting">Your assessment
+            <img
+              v-for='star in 5' :key="'star'+star"
+              :src="`${$baseUrl}/icons/star.svg`"
+              alt="star"
+              class="review__buttons-star"
+              :class="{'review__buttons-star--hovered': star <= starHovered}"
+              @click="onStarHover(star)"
+            >
+          </div>
+          <MyButton
+            title="Sent review"
+            :isDisabled="!this.inputValue || !this.starHovered"
+            :icon="'send.svg'"
+            @click="saveRewiew"
+          />
+        </div>
       </div>
+      <ReviewMessages/>
     </div>
-    <ReviewMessages/>
+    <SavePanel v-if="isDesktop"/>
   </div>
 </template>
 
 <script>
 import {router} from '../router'
 import MyButton from './CustomComponents/MyButton.vue'
+import Rooms from './CustomComponents/Rooms.vue'
 import ReviewMessages from './CustomComponents/ReviewMessages.vue'
 import SavePanel from './CustomComponents/SavePanel.vue'
 import Gallery from './CustomComponents/Gallery.vue'
@@ -48,6 +59,7 @@ export default {
     Gallery,
     SavePanel,
     ReviewMessages,
+    Rooms
   },
   data() {
     return {
@@ -62,14 +74,14 @@ export default {
     currentPlace() {
       return this.$store.state.placesModule.place
     },
+    currentRooms() {
+      return this.$store.state.placesModule.rooms
+    },
     currentReviews() {
       return this.$store.state.placesModule.reviews
     },
     currentPictures() {
-      return this.$store.state.placesModule.pictures
-    },
-    isAdmin() {
-      return this.$store.state.userModule.user.name === "Admin"
+      return this.$store.state.placesModule.pictures.map(picture => picture.fileName)
     },
     isDesktop(){
       return this.$store.state.appModule.isDesktop
@@ -86,6 +98,7 @@ export default {
   },
   created(){
     this.$store.dispatch("getPlace", this.currentRoute)
+    this.$store.dispatch("getFeatures", {placeId: this.currentRoute})
   },
 }
 </script>
@@ -93,9 +106,14 @@ export default {
 <style scoped lang="scss">
 
 .page {
-  padding: 20px 380px 20px 40px;
+  padding: 20px 40px;
+  display: grid;
+  grid-template-columns: 1fr 320px;
+  align-items: start;
+  gap: 20px;
   &-mobile {
     padding: 3%;
+    grid-template-columns: 1fr;
   }
 }
 
@@ -113,6 +131,7 @@ export default {
   background-color:rgb(249, 249, 249);
   border-radius: 5px;
   border: solid rgb(240, 240, 240) 1px;
+  margin: 30px 0;
 }
 
 .review__input {
@@ -137,7 +156,6 @@ export default {
 
 .raiting {
   display: flex;
-  font-size: 0.9em;
   font-weight: 300;
   align-items: center;
   margin-left: 15px;

@@ -5,7 +5,10 @@
       v-for='favorite in myFavorites'
       :key="favorite"
       :FullSize="true"
+      :showHeart="true"
       :routePoint="favorite"
+      buttonIcon="house.svg"
+      buttonText="Book It"
     />
   </div>
 </template>
@@ -22,9 +25,9 @@ export default {
     },
     titleText () {
       if (this.myFavorites.length) {
-        return "Избранное: " + this.myFavorites.length
+        return "Favorites: " + this.myFavorites.length
       } else {
-        return "Пока здесь пусто"
+        return "There's nothing here"
       }
     },
     isDesktop(){

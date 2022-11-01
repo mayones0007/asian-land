@@ -24,8 +24,24 @@ export const mutations = {
     }
   },
 
+  setMyPlaces(state, myPlaces) {
+    state.myPlaces = myPlaces
+  },
+
   setPlace(state, place) {
     state.place = place
+  },
+
+  setRooms(state, rooms) {
+    state.rooms = rooms
+  },
+
+  setFeatures(state, features) {
+    state.features = features
+  },
+
+  setFeaturesList(state, featuresList) {
+    state.featuresList = featuresList
   },
 
   setReviews(state, reviews) {

@@ -1,7 +1,7 @@
 <template>
   <div class="share-button">
     <img :src="`${$baseUrl}/icons/share.svg`" alt="share" class="share-button__icon" @click="setShowShareLinks()">
-    <div v-if="showShareLinks" class="share-button__links" :class="{'share-button__links-mobile': !isDesktop}">
+    <div v-if="showShareLinks" class="share-button__links">
       <a v-for="social in socials" :key="social.alt" :href="social.shareref + this.$route.path" target="_blank">
         <img :src="social.icon" :alt="social.alt" class="links__item">
       </a>
@@ -19,11 +19,6 @@ export default {
       showShareLinks: false,
     };
   },
-  computed: {
-    isDesktop(){
-      return this.$store.state.appModule.isDesktop
-    }
-  },
   methods: {
     setShowShareLinks() {
       this.showShareLinks = !this.showShareLinks
@@ -38,8 +33,8 @@ export default {
   cursor: pointer;
   align-self: center;
   justify-self: center;
-  height: 25px;
-  width: 25px;
+  height: 20px;
+  width: 20px;
 }
 
 .share-button__icon {
@@ -50,25 +45,25 @@ export default {
 .share-button__links {
   position: absolute;
   display: grid;
-  bottom: -250px;
+  top: 35px;
   right: 50%;
   transform: translate(50%,0);
-  background-color: #f1f1f1;
+  background-color: #ffffff;
   border-radius: 5px;
-}
-
-.share-button__links-mobile {
-  bottom: 60px;
 }
 
 .links__item {
   width: 30px;
   height: 30px;
-  padding: 10px;
-  filter: invert(0.9);
+  padding: 5px;
+  filter: invert(0.8);
   border-radius: 5px;
   &:hover {
-    background-color: #040404;
+    background-color: #000000;
   }
+}
+
+a {
+  font-size: 0;
 }
 </style>

@@ -10,7 +10,7 @@
       <div @click="toggleSize">{{routePoint.name}}</div>
       <ButtonHeart
         :placeId="routePoint.id"
-        v-if="!isDesktop"
+        v-if="!isDesktop && showHeart"
       />
     </div>
     <div v-if="isDesktop" class="route-point__info route-point__info-desktop">
@@ -18,6 +18,7 @@
       <div class="tag">{{routePoint.city}}</div>
       <div class="tag">{{routePoint.category}}</div>
       <ButtonHeart
+        v-if="showHeart"
         :placeId="routePoint.id"
       />
     </div>
@@ -32,8 +33,10 @@
         <div class="tag">{{routePoint.category}}</div>
       </div>
       <div class="route-point__buttons">
-        <AddInRouteButton
-        :placeId="routePoint.id"
+        <MyButton
+          :title="buttonText"
+          :icon="buttonIcon"
+          @click="$emit('routeClick')"
         />
       </div>
     </div>
@@ -42,16 +45,16 @@
 </template>
 
 <script>
-import AddInRouteButton from './AddInRouteButton.vue'
+import MyButton from './MyButton.vue'
 import PlacePreview from './PlacePreview.vue'
 import ButtonHeart from './ButtonHeart.vue'
 export default {
   components: {
-    AddInRouteButton,
+    MyButton,
     PlacePreview,
     ButtonHeart
   },
-  props: ['routePoint', 'FullSize'],
+  props: ['routePoint', 'FullSize', 'showHeart', 'buttonText', 'buttonIcon'],
   data(){
     return {
       isFullSize: this.FullSize,
@@ -73,14 +76,14 @@ export default {
 <style scoped lang="scss">
 
 .route-point {
-  margin-top: 15px;
+  margin: 15px 0;
   padding: 20px;
   border-radius: 20px;
   background-color:aliceblue;
-  height: 20px;
+  height: 40px;
   display: grid;
   overflow: hidden;
-  grid-template-rows: 20px 1fr;
+  grid-template-rows: 40px 1fr;
   grid-template-columns: 300px 1fr;
   gap: 20px;
   border: solid 1px rgba(0, 0, 0, 0.076);
@@ -150,6 +153,7 @@ export default {
   &-desktop {
     justify-self: end;
     flex-wrap: nowrap;
+    height: 40px;
   }
 }
 .route-point__container {
