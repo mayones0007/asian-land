@@ -2,7 +2,7 @@
   <div class="background" @click.self="setLoginPopup">
     <div class="login-window"  :class="{'login-window-mobile': !isDesktop}" @keyup.esc.stop="setLoginPopup" @keyup.enter.stop="login">
       <h2>Sign in</h2>
-      <div class="button-close" @click="setLoginPopup"/>
+      <img :src="`${$baseUrl}/icons/close-btn.png`" class="button-close" @click="setLoginPopup">
       <div class="form">
         <input class="form__input-text" ref="name" v-model="email" type="text" placeholder="E - mail" tabindex="-1">
         <input class="form__input-text" v-model="password" type="password" placeholder="Password">
@@ -74,7 +74,6 @@ export default {
 
 .button-close {
   position: absolute;
-  background: url("https://marshrutka.su/api/icons/close-btn.png") center/100% no-repeat;
   width: 25px;
   height: 25px;
   right: 20px;

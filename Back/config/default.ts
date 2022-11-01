@@ -1,5 +1,5 @@
 export const config = {
   "port": 3000,
-  "jwtSecret": "marshrutka off the wall",
+  "jwtSecret": "asian land the best",
   "baseUrl": "http://localhost:3000"
 }

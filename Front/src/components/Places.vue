@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="welcome" :class="{'welcome-mobile': !isDesktop}">
-      <img class="welcome__picture" :src="`${$baseUrl}/img/${welcomeImage.image}`" alt="Маршрутка">
+      <img class="welcome__picture" :src="`${$baseUrl}/img/${welcomeImage.image}`" alt="asian.land">
       <div class="welcome__text">{{ welcomeImage.text }}</div>
     </div>
     <MyButton

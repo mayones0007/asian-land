@@ -17,12 +17,12 @@ export const routeNames = {
 }
 
 const routes = [
-  { path: '/', name: routeNames.places, component: Places, meta: {title: "Marshrutka - создай свой маршрут"}},
-  { path: '/registration', name: routeNames.registration, component: Registration, meta: { title: "Marshrutka - создай свой маршрут" } },
-  { path: '/myfavorites', name: routeNames.myFavorites, component: MyFavorites, meta: { title: "Marshrutka - создай свой маршрут" } },
-  { path: '/settings', name: routeNames.settings, component: Settings, meta: { title: "Marshrutka - создай свой маршрут" } },
-  { path: '/:id', name: routeNames.description, component: Description, meta: { title: "Marshrutka - создай свой маршрут" } },
-  { path: '/myobjects', name: routeNames.newPlace, component: NewPlace, meta: { title: "Marshrutka - создай свой маршрут" } },
+  { path: '/', name: routeNames.places, component: Places, meta: {title: "asian.land"}},
+  { path: '/registration', name: routeNames.registration, component: Registration, meta: { title: "asian.land" } },
+  { path: '/myfavorites', name: routeNames.myFavorites, component: MyFavorites, meta: { title: "asian.land" } },
+  { path: '/settings', name: routeNames.settings, component: Settings, meta: { title: "asian.land" } },
+  { path: '/:id', name: routeNames.description, component: Description, meta: { title: "asian.land" } },
+  { path: '/myobjects', name: routeNames.newPlace, component: NewPlace, meta: { title: "asian.land" } },
 ]
 export const router = createRouter({
   history: createWebHistory(),

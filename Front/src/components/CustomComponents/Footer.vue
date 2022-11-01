@@ -13,7 +13,7 @@
         <img :src="social.icon" :alt="social.alt" class="contacts-social__item">
       </a>
     </div>
-    <router-link :to="{name: $options.routeNames.places}" class="footer__logo-name" :class="{'footer__logo-name-mobile': !isDesktop}">© 2022, Marshrutka Limited Sochifornia</router-link>
+    <router-link :to="{name: $options.routeNames.places}" class="footer__logo-name" :class="{'footer__logo-name-mobile': !isDesktop}">© 2022, asian.land</router-link>
   </div>
 </template>
 
@@ -25,8 +25,8 @@ export default {
   data() {
     return {
         socials: socials,
-        tel: '+79014534841',
-        email: 'macs0007@mail.ru',
+        tel: '+79993543535',
+        email: 'mail@mail.com',
     };
   },
   computed: {
