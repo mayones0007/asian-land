@@ -4,17 +4,17 @@ export const validation = (value, type) => {
   if(value) {
     switch (type) {
       case 'phone':
-        return value.length > 11 && value.match(numbers) && value.includes('+') ? '' : 'Введите корректный phone'
+        return value.length > 11 && value.match(numbers) && value.includes('+') ? '' : 'Phone number is incorrect'
       case 'email':
-        return value.includes('@') && value.includes('.') ? '' : 'Введите корректный email'
+        return value.includes('@') && value.includes('.') ? '' : 'E-mail is incorrect'
       case 'password':
-        return value.length > 6 && value.match(numbers) && value.match(letters) ? '' : 'Пароль должен быть больше 6 символов и включать латниские буквы и цифры'
+        return value.length > 6 && value.match(numbers) && value.match(letters) ? '' : 'Password must contain at least 6 symbols (numbers and/or letters'
       case 'firstName':
-        return value.length > 1 && value.match(letters) ? '' : 'Введите корректное имя'
+        return value.length > 1 && value.match(letters) ? '' : 'First Name is incorrect'
       case 'lastName':
-        return value.length > 1 && value.match(letters) ? '' : 'Введите корректную фамилию'
+        return value.length > 1 && value.match(letters) ? '' : 'Last Name is incorrect'
       default:
         return ''
     }
-  } return 'заполни поле'
+  } return ''
 }

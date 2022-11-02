@@ -1,4 +1,4 @@
-export const placeFields = [
+export const roomFields = [
   {
     fieldName: 'name',
     name: 'Name',

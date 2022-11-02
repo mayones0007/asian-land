@@ -12,7 +12,7 @@ export class UserController {
     if (!id){
       return {
         status: 400,
-        body: { message: 'Пользователь не найден' }
+        body: { message: 'User not found' }
       }
     }
     const user = await models.user.getUser({ id })
@@ -34,7 +34,7 @@ export class UserController {
     if (userEmail) {
       return {
         status: 400,
-        body: { message: 'Пользователь с таким email уже существует' }
+        body: { message: 'User with this email already exists' }
       }
     }
 
@@ -44,7 +44,7 @@ export class UserController {
     return {
       status: 200,
       body: {
-        message: 'Успешный вход',
+        message: 'Successful login',
         accessToken,
         refreshToken,
         user: { name: user.firstName, id: user.id, avatar: user.avatar, role: user.role }
@@ -66,7 +66,7 @@ export class UserController {
     }
     return {
       status: 403,
-      body: { message: 'Ошибка токена' }
+      body: { message: 'Token Error' }
     }
   }
 
@@ -77,7 +77,7 @@ export class UserController {
     if (!email || !password) {
       return {
         status: 400,
-        body: { message: 'Логин и/или пароль отсутствуют' }
+        body: { message: 'Login and/or password are missing' }
       }
     }
 
@@ -85,14 +85,14 @@ export class UserController {
     if (!user) {
       return {
         status: 400,
-        body: { message: 'Неверный email' }
+        body: { message: 'Invalid email' }
       }
     }
 
     if (user.password !== password) {
       return {
         status: 400,
-        body: { message: 'Неверный пароль' }
+        body: { message: 'Invalid password' }
       }
     }
 
@@ -100,7 +100,7 @@ export class UserController {
     return {
       status: 200,
       body: {
-        message: 'Успешный вход',
+        message: 'Successful login',
         accessToken,
         refreshToken,
         user: { name: user.firstName, id: user.id, avatar: user.avatar, role: user.role}
@@ -113,7 +113,7 @@ export class UserController {
     if (!id) {
       return {
         status: 403,
-        body: { message: 'Доступ запрещен' }
+        body: { message: 'Access denied' }
       }
     } 
     const password = req.body.password
@@ -127,20 +127,20 @@ export class UserController {
       if (user.email !== email) {
         return {
           status: 400,
-          body: { message: 'Неверный email' }
+          body: { message: 'Invalid email' }
         }
       } else {
         const userEmail = await models.user.getUser({ email: newEmail })
         if (userEmail) {
           return {
             status: 400,
-            body: { message: 'Пользователь с таким email уже существует' }
+            body: { message: 'User with this email already exists' }
           }
         } else {
           models.user.editUser({ id }, { email: newEmail, updatedAt })
           return {
             status: 200,
-            body: { message: 'Email обновлен' }
+            body: { message: 'Email is updated' }
           }
         }
       }
@@ -149,13 +149,13 @@ export class UserController {
       if (user.password !== password) {
         return {
           status: 400,
-          body: { message: 'Неверный пароль' }
+          body: { message: 'Invalid password' }
         }
       } else {
         models.user.editUser({ id }, { password: newPassword, updatedAt })
         return {
           status: 200,
-          body: { message: 'Пароль обновлен' }
+          body: { message: 'Password is updated' }
         }
       }
     }
@@ -166,12 +166,12 @@ export class UserController {
       fileService.saveFiles('avatars', files)
       return {
         status: 200,
-        body: { message: 'Аватар обновлен' }
+        body: { message: 'Avatar is updated' }
       }
     }
     return {
       status: 400,
-      body: { message: 'Ошибка обновления' }
+      body: { message: 'Update error' }
     }
   }
 }

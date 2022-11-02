@@ -1,12 +1,17 @@
 <template>
+  <div class="background">
   <div class="lds-spinner"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>
+  </div>
 </template>
 
-<style scoped>
+<style lang="scss" scoped>
+.background {
+  @include background_popup;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
 .lds-spinner {
-  color: official;
-  display: inline-block;
-  position: relative;
   width: 80px;
   height: 80px;
 }

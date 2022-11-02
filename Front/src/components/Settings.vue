@@ -1,6 +1,6 @@
 <template>
   <div class="form">
-    <h2>Настройки</h2>
+    <h2>Settings</h2>
     <Avatar
       v-if="user.avatar"
       :userName="user.name"
@@ -10,18 +10,18 @@
       :hideName="true"
     />
     <input class="form__input-file" type="file" id="file" ref="file" accept="image/*" @change="replaceUserAvatar()">
-    <label class="form__button" for="file">Изменить аватар</label>
-    <input class="form__input-text" v-model="email" type="email" placeholder="Старый e-mail">
-    <input class="form__input-text" v-model="newEmail" type="email" placeholder="Новый e-mail">
+    <label class="form__button" for="file">Set avatar</label>
+    <input class="form__input-text" v-model="email" type="email" placeholder="E-mail">
+    <input class="form__input-text" v-model="newEmail" type="email" placeholder="New e-mail">
     <MyButton 
-      title="Изменить E-mail"
+      title="Set e-mail"
       :isDisabled="!(newEmail && email)"
       @click="replaceUserEmail"
     />
-    <input class="form__input-text" v-model="password" type="password" placeholder="Старый пароль">
-    <input class="form__input-text" v-model="newPassword" type="password" placeholder="Новый пароль">
+    <input class="form__input-text" v-model="password" type="password" placeholder="password">
+    <input class="form__input-text" v-model="newPassword" type="password" placeholder="New password">
     <MyButton 
-      title="Изменить пароль"
+      title="Set password"
       :isDisabled="!(newPassword && password)"
       @click="replaceUserPassword"
     />

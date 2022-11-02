@@ -51,7 +51,6 @@ export default {
 
 .footer__logo-name{
   @include link-reset;
-  width: 200px;
   text-align: end;
   height: 80px;
   display: flex;
@@ -61,7 +60,6 @@ export default {
 }
 
 .footer__logo-name-mobile{
-  width: 300px;
   text-align: center;
   height: 30px;
   justify-content: flex-start;

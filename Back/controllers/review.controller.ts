@@ -17,7 +17,7 @@ export class ReviewController {
     await models.review.deleteReview({ id })
     return {
       status: 200,
-      body: { message: 'Комментирий удален' },
+      body: { message: 'Comment deleted' },
     }
   }
   async createReview(req: Request): Promise<AppResponse> {
@@ -25,7 +25,7 @@ export class ReviewController {
     await models.review.createReview( NewReview )
     return {
       status: 200,
-      body: { message: 'Комментирий добавлен' },
+      body: { message: 'Comment added' },
     }
   }
 }

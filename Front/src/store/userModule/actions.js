@@ -8,7 +8,6 @@ export const actions = {
       const response = await axiosInstance.get('user')
       commit('setUser', response.data.user)
       dispatch('getFavorites')
-      dispatch('getRoute')
     } catch (e) {
       console.log("Ошибка HTTP: " + e)
     }
@@ -20,7 +19,6 @@ export const actions = {
       localStorage.setItem('userData', JSON.stringify({ accessToken: response.data.accessToken, refreshToken: response.data.refreshToken }))
       commit('setUser', response.data.user)
       dispatch('getFavorites')
-      dispatch('getRoute')
       commit('setLoginPopup')
     } catch (e) {
       console.log("Ошибка HTTP: " + e)
@@ -81,37 +79,6 @@ export const actions = {
       if (response) {
         dispatch('getFavorites')
       }
-    } catch (e) {
-      console.log("Ошибка HTTP: " + e)
-    }
-  },
-
-  async addInRoute({ state, dispatch }, placeId) {
-    try {
-      const response = await axiosInstance.post('route', { userId: state.user.id, placeId })
-      if (response) {
-        dispatch('getRoute')
-      }
-    } catch (e) {
-      console.log("Ошибка HTTP: " + e)
-    }
-  },
-
-  async deleteInRoute({ state, dispatch }, placeId) {
-    try {
-      const response = await axiosInstance.delete('route', { params: { userId: state.user.id, placeId } })
-      if (response) {
-        dispatch('getRoute')
-      }
-    } catch (e) {
-      console.log("Ошибка HTTP: " + e)
-    }
-  },
-
-  async getRoute({ state, commit }) {
-    try {
-      const response = await axiosInstance.get('route', { params: { id: state.user.id } })
-      commit('setmyRoute', response.data)
     } catch (e) {
       console.log("Ошибка HTTP: " + e)
     }

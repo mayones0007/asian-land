@@ -110,39 +110,42 @@ export const actions = {
     }
   },
 
-  async addNewPlace({ dispatch }, inputs) {
+  async addNewPlace({ dispatch }, newPlace) {
     try {
       const formData = new FormData()
-      formData.append('place', JSON.stringify(inputs[0]))
+      formData.append('place', JSON.stringify(newPlace.place))
       const files = []
-      Object.values(inputs[1]).forEach(file => {
+      Object.values(newPlace.files).forEach(file => {
         files.push(compressAndRenamePicture(file))
       })
-      Promise.all(files).then(async (list) => {
+      return Promise.all(files).then(async (list) => {
         list.forEach(file => formData.append('images', file))
-        await axiosInstance.post('place', formData, { headers: { 'Content-Type': 'multipart/form-data' } })
+        const response = await axiosInstance.post('place', formData, { headers: { 'Content-Type': 'multipart/form-data' } })
         dispatch("getMyPlaces")
+        return response.status
       })
     } catch (e) {
       console.log("Ошибка HTTP: " + e)
     }
   },
 
-  async addNewRoom({ dispatch }, inputs) {
+  async addNewRoom({ dispatch }, newRoom) {
     try {
       const formData = new FormData()
-      formData.append('room', JSON.stringify(inputs[0]))
-      formData.append('placeId', JSON.stringify(inputs[1]))
-      formData.append('features', JSON.stringify(inputs[2]))
+      const placeId = newRoom.placeId
+      formData.append('room', JSON.stringify(newRoom.room))
+      formData.append('placeId', placeId)
+      formData.append('features', JSON.stringify(newRoom.features))
       const files = []
-      Object.values(inputs[3]).forEach(file => {
+      Object.values(newRoom.files).forEach(file => {
         files.push(compressAndRenamePicture(file))
       })
-      Promise.all(files).then(async (list) => {
+      return Promise.all(files).then(async (list) => {
         list.forEach(file => formData.append('images', file))
-        await axiosInstance.post('room', formData, { headers: { 'Content-Type': 'multipart/form-data' } })
-        dispatch("getRooms", inputs[1])
-        dispatch("getFeatures", { placeId: inputs[1] })
+        const response = await axiosInstance.post('room', formData, { headers: { 'Content-Type': 'multipart/form-data' } })
+        dispatch("getRooms", placeId)
+        dispatch("getFeatures", { placeId })
+        return response.status
       })
     } catch (e) {
       console.log("Ошибка HTTP: " + e)

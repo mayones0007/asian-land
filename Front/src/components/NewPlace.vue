@@ -23,7 +23,7 @@
     <div v-if="isShowForm" class="form" :class="{'form-mobile': !isDesktop}">
       <h2 class="form__header">Object</h2>
       <div v-for="field in this.placeFields" :key="field.name" class="form__item">
-        <label :for="field.fieldName">{{field.name}}</label>
+        <label :for="field.fieldName">{{field.name}}{{field.required ? '*' : ''}}</label>
         <div>
           <input 
             class="form__input"
@@ -32,7 +32,7 @@
             :placeholder="field.placeholder"
             :type="field.type"
             :list="field.name"
-            @blur="validate(field.fieldName)"
+            @blur="validate(field, this.place)"
           >
           <datalist v-if="field.autofull" :id="field.name">
             <option v-for="option in options(field.fieldName)" :key="option">{{option}}</option>
@@ -50,17 +50,23 @@
     
     <div v-if="this.room.id || this.isNewRoom" class="form" :class="{'form-mobile': !isDesktop}">
       <h2 class="form__header">Room</h2>
-      <div class="form__item">
-        <label for="roomName">Name</label>
-        <input class="form__input" id="roomName" v-model="room.name" type="text">
-      </div>
-      <div class="form__item">
-        <label for="roomSleeps">Sleeps</label>
-        <input class="form__input" id="roomSleeps" v-model="room.sleeps" type="number">
-      </div>
-      <div class="form__item">
-        <label for="roomArea">Area</label>
-        <input class="form__input" id="roomArea" v-model="room.area" type="number">
+      <div v-for="field in this.roomFields" :key="field.name" class="form__item">
+        <label :for="field.fieldName">{{field.name}}{{field.required ? '*' : ''}}</label>
+        <div>
+          <input 
+            class="form__input"
+            :id="field.fieldName"
+            v-model="room[field.fieldName]" 
+            :placeholder="field.placeholder"
+            :type="field.type"
+            :list="field.name"
+            @blur="validate(field, this.room)"
+          >
+          <datalist v-if="field.autofull" :id="field.name">
+            <option v-for="option in options(field.fieldName)" :key="option">{{option}}</option>
+          </datalist>
+          <div v-if="this.validation[field.fieldName]" class="input-text-wrong">{{this.validation[field.fieldName]}}</div>
+        </div>
       </div>
       <div class="form__item">
         <label for="features">Features</label>
@@ -120,21 +126,27 @@
       <MyButton v-if="place.id || room.id || this.isNewObject" title="Cancel" isRed="true" @click="cancel"/>
       <MyButton v-if="place.id && !this.isNewRoom" title="Delete" :isRedEmpty="true" @click="deleteIt"/>
     </div>
+    <LoadSpinner
+      v-if="isLoading"
+    />
   </div>
 </template>
 
 <script>
 import MyButton from './CustomComponents/MyButton.vue'
 import RoutePoint from './CustomComponents/RoutePoint.vue'
+import LoadSpinner from './CustomComponents/LoadSpinner.vue'
 import Rooms from './CustomComponents/Rooms.vue'
 import { placeFields } from '../data/place.data'
+import { roomFields } from '../data/room.data'
 import { validation } from '../services/validation.service'
 
 export default {
   components: {
     MyButton,
     RoutePoint,
-    Rooms
+    Rooms,
+    LoadSpinner
   },
   data: () => ({
     place: {},
@@ -148,6 +160,7 @@ export default {
     isNewRoom: false,
     validation: {},
     placeFields,
+    roomFields
   }),
   computed: {
     myPlaces() {
@@ -170,10 +183,10 @@ export default {
       return this.isAdmin ? "Add" : "Sent for verification"
     },
     isFilledForm() {
-      return Object.values(this.place).filter((item) => item !== "").length > 8
+      return Object.values(this.validation).every(value => value === '') && this.placeFields.every(field => !field.required || !!this.place[field.fieldName])
     },
     isFilledRoomForm() {
-      return Object.values(this.room).filter((item) => item !== "").length > 3
+      return Object.values(this.validation).every(value => value === '') && this.roomFields.every(field => !field.required || !!this.room[field.fieldName])
     },
     isFilledPictures() {
       return (this.currentPictures.length + this.addedPictures.length) > 1
@@ -186,23 +199,28 @@ export default {
     },
   },
   methods: {
-    validate(fieldName){
-      this.validation[fieldName] = validation(this.place[fieldName], fieldName)
+    validate(field, model){
+      this.validation[field.fieldName] = validation(model[field.fieldName], field.fieldName)
     },
-    addNewPlace(){
+    async addNewPlace(){
       this.isLoading = true
-      this.$store.dispatch('addNewPlace', [this.place, this.$refs.file.files])
-      this.place = {}
-      this.addedPictures = []
-      this.isNewObject = false
+      const status = await this.$store.dispatch('addNewPlace', {place: this.place, files: this.$refs.file.files})
+      if (status === 200) {
+        this.$store.dispatch("getMyPlaces")
+        this.place = {}
+        this.addedPictures = []
+        this.isNewObject = false
+      }
       this.isLoading = false
     },
-    addNewRoom(){
+    async addNewRoom(){
       this.isLoading = true
-      this.$store.dispatch('addNewRoom', [this.room, this.place.id, this.features, this.$refs.file.files])
-      this.room = {}
-      this.addedPictures = []
-      this.isNewRoom = false
+      const status = await this.$store.dispatch('addNewRoom', {room: this.room, placeId: this.place.id, features: this.features, files: this.$refs.file.files})
+      if (status === 200) {
+        this.room = {}
+        this.addedPictures = []
+        this.isNewRoom = false
+      }
       this.isLoading = false
     },
     edit() {
@@ -448,5 +466,11 @@ export default {
   color: red;
   font-size: 0.6em;
   text-align: start;
+}
+.spinner {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  z-index: 1;
 }
 </style>

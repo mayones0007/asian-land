@@ -28,12 +28,12 @@ export class RoomController {
       fileService.saveFiles('img', files)
       return {
         status: 200,
-        body: { message: 'Комната добавлена' },
+        body: { message: 'Room added' },
       }
     } else {
       return {
         status: 400,
-        body: { message: 'Ошибка при передаче файлов' },
+        body: { message: 'File transfer error' },
       }
     }
   }
@@ -52,7 +52,7 @@ export class RoomController {
     }
     return {
       status: 200,
-      body: { message: 'Место обновлено' },
+      body: { message: 'The room has been updated' },
     }
   }
   async deleteRoom(req: Request): Promise<AppResponse> {
@@ -62,7 +62,7 @@ export class RoomController {
     await models.room.deleteRoom(id)
     return {
       status: 200,
-      body: { message: 'Комната удалена' },
+      body: { message: 'Room delated' },
     }
   }
 }

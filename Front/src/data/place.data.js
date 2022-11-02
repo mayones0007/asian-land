@@ -5,34 +5,39 @@ export const placeFields = [
     type: 'text',
     autofull: false,
     required: true,
+    info: false,
   },
   {
     fieldName: 'category',
     name: 'Category',
     type: 'text',
     autofull: true,
-    required: true
+    required: true,
+    info: true,
   },
   {
     fieldName: 'country',
     name: 'Country',
     type: 'text',
     autofull: true,
-    required: true
+    required: true,
+    info: true,
   },
   {
     fieldName: 'region',
     name: 'Region',
     type: 'text',
     autofull: true,
-    required: true
+    required: true,
+    info: true,
   },
   {
     fieldName: 'city',
     name: 'City',
     type: 'text',
     autofull: true,
-    required: true
+    required: true,
+    info: true,
   },
   {
     fieldName: 'phone',
@@ -40,42 +45,48 @@ export const placeFields = [
     type: 'tel',
     autofull: false,
     required: true,
-    placeholder: "+7"
+    placeholder: "+",
+    info: true,
   },
   {
     fieldName: 'email',
-    name: 'E - mail',
-    type: 'text',
+    name: 'E-mail',
+    type: 'email',
     autofull: false,
-    required: true
+    required: false,
+    info: true,
   },
   {
     fieldName: 'coords',
     name: 'Coords',
     type: 'text',
     autofull: false,
-    required: true,
-    placeholder: "43.434954,40.442885"
+    required: false,
+    placeholder: "43.434954,40.442885",
+    info: false,
   },
   {
     fieldName: 'site',
     name: 'Site',
     type: 'text',
     autofull: false,
-    required: false
+    required: false,
+    info: true,
   },
   {
     fieldName: 'street',
     name: 'Street',
     type: 'text',
     autofull: false,
-    required: true
+    required: true,
+    info: true,
   },
   {
-    fieldName: 'binding',
-    name: 'Binding',
+    fieldName: 'bilding',
+    name: 'Bilding',
     type: 'text',
     autofull: false,
-    required: true
+    required: true,
+    info: true,
   },
 ]

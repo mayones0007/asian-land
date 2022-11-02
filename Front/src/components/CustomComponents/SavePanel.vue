@@ -7,34 +7,23 @@
       />
       <ShareButton/>
     </div>
-    <div>Country</div>
-    <div>{{currentPlace.country}}</div>
-    <div>Region</div>
-    <div>{{currentPlace.region}}</div>
-    <div>City</div>
-    <div>{{currentPlace.city}}</div>
-    <div>Category</div>
-    <div>{{currentPlace.category}}</div>
-    <div>Phone</div>
-    <div>{{currentPlace.phone}}</div>
-    <div>E-mail</div>
-    <div>{{currentPlace.email}}</div>
-    <div>Site</div>
-    <div>{{currentPlace.site}}</div>
-    <div>Street</div>
-    <div>{{currentPlace.street}}</div>
-    <div>Binding</div>
-    <div>{{currentPlace.binding}}</div>
-    <div>Raiting</div>
-    <div class="raiting" v-if="currentPlace.raiting">
-      <img
-        v-for='star in currentPlace.raiting' :key="'star'+star"
-        :src="`${$baseUrl}/icons/star.svg`"
-        alt="star"
-        class="raiting__star"
-      >
+    <div v-for="field in infoFields" :key="field.name" class="save-panel__item">
+      <div>{{field.name}}</div>
+      <a v-if="field.type === 'email'" class= "link" :href="`mailto:${currentPlace[field.fieldName]}`">{{currentPlace[field.fieldName]}}</a>
+      <a v-else-if="field.type === 'tel'" class= "link" :href="`tel:${currentPlace[field.fieldName]}`">{{currentPlace[field.fieldName]}}</a>
+      <div v-else>{{currentPlace[field.fieldName]}}</div>
     </div>
-    <div v-else>Не определен</div>
+    <div class="save-panel__item">
+      <div>Raiting</div>
+      <div class="raiting" v-if="currentPlace.raiting">
+        <img
+          v-for='star in currentPlace.raiting' :key="'star'+star"
+          :src="`${$baseUrl}/icons/star.svg`"
+          alt="star"
+          class="raiting__star"
+        >
+      </div>
+    </div>
     <div v-if="coords" class="map">
       <yandex-map
         :coords="coords" 
@@ -67,8 +56,9 @@
 import MyButton from './MyButton.vue'
 import ButtonHeart from './ButtonHeart.vue'
 import ShareButton from './ShareButton.vue'
-import Datepicker from '@vuepic/vue-datepicker';
-import '@vuepic/vue-datepicker/src/VueDatePicker/style/main.scss';
+import Datepicker from '@vuepic/vue-datepicker'
+import '@vuepic/vue-datepicker/src/VueDatePicker/style/main.scss'
+import { placeFields } from '../../data/place.data'
 
 export default {
   name: 'SavePanel',
@@ -83,6 +73,7 @@ export default {
       controls: ['fullscreenControl'],
       myMap: null,
       date: [],
+      placeFields
     }
   },
   computed: {
@@ -94,6 +85,9 @@ export default {
     },
     coords() {
       return this.currentPlace.coords ? this.currentPlace.coords.split(',') : undefined
+    },
+    infoFields() {
+      return this.placeFields.filter((field) => field.info && this.currentPlace[field.fieldName])
     },
   },
   methods: {
@@ -117,7 +111,6 @@ export default {
   box-sizing: border-box;
   justify-items: start;
   top: 20px;
-  grid-template-columns: 1fr 1.5fr;
   gap: 15px;
   padding: 20px;
   background: linear-gradient(45deg, rgb(235, 246, 255), rgb(207, 233, 255));
@@ -130,7 +123,6 @@ export default {
 .save-panel__info-mobile {
   position: relative;
   border-radius: 0 0 5px 5px;
-  grid-template-columns: auto auto;
   background: rgb(235, 246, 255);
   border: none;
   padding: 15px;
@@ -142,7 +134,6 @@ export default {
 .save-panel__buttons {
   position: relative;
   display: grid;
-  grid-column: span 2;
   grid-template-columns: 1fr 90px;
   box-sizing: border-box;
   gap: 10px;
@@ -170,7 +161,6 @@ export default {
 .map {
   height: 200px;
   width: 100%;
-  grid-column: span 2;
 }
 
 .ymap-container {
@@ -179,7 +169,6 @@ export default {
 }
 
 .name {
-  grid-column: span 2;
   font-weight: 400;
   font-size: 1.2em;
   width: 100%;
@@ -187,5 +176,15 @@ export default {
   grid-template-columns: 1fr 25px 25px;
   gap: 10px;
   text-align: start;
+}
+
+.link {
+  color: rgb(0, 148, 99);
+}
+.save-panel__item {
+  display: grid;
+  grid-template-columns: 1fr 1.5fr;
+  width: 100%;
+  justify-items: start;
 }
 </style>

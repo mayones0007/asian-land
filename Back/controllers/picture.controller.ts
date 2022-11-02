@@ -22,12 +22,12 @@ export class PictureController {
       models.picture.savePictures(placeId, roomId, files)
       return {
         status: 200,
-        body: { message: 'Картинки добавлены' },
+        body: { message: 'Pictures added' },
       }
     } else {
       return {
         status: 400,
-        body: { message: 'Ошибка при передаче файлов' },
+        body: { message: 'File transfer error' },
       }
     }
   }
@@ -38,12 +38,12 @@ export class PictureController {
     fileService.deleteFiles('img', fileName)
     return {
       status: 200,
-      body: { message: 'Картинка удалена' },
+      body: { message: 'Picture deleted' },
     }
     } else {
       return {
         status: 400,
-        body: { message: 'Ошибка при удалении файлов' },
+        body: { message: 'Error deleting files' },
       }
     }
   }

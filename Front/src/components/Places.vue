@@ -58,7 +58,7 @@ export default {
       if (this.selectedRegion) {
         return {image: this.filteredPlaces[0].picture, text: this.selectedRegion}
       } else {
-        return {image: "chelovek-gora.webp", text: "Find your best place"}
+        return {image: "welcome.webp", text: "Find your best place"}
       }
     },
     isDesktop(){

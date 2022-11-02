@@ -41,12 +41,12 @@ export class PlaceController {
       models.picture.savePictures(placeId, roomId, files)
       return {
         status: 200,
-        body: { message: 'Место добавлено' },
+        body: { message: 'Place added' },
       }
     } else {
       return {
         status: 400,
-        body: { message: 'Ошибка при передаче файлов' },
+        body: { message: 'File transfer error' },
       }
     }
   }
@@ -60,7 +60,7 @@ export class PlaceController {
     }
     return {
       status: 200,
-      body: { message: 'Место обновлено' },
+      body: { message: 'The place has been updated' },
     }
   }
   async deletePlace(req: Request): Promise<AppResponse> {
@@ -70,7 +70,7 @@ export class PlaceController {
     await models.place.deletePlace(id)
     return {
       status: 200,
-      body: { message: 'Место удалено' },
+      body: { message: 'Place deleted' },
     }
   }
 }

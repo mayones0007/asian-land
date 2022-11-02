@@ -105,21 +105,6 @@ app.get('/favorite', corsMiddleware, authMiddleware, async (req: Request, res: R
   res.status(response.status).send(response.body)
 })
 
-app.get('/route', corsMiddleware, authMiddleware, async (req: Request, res: Response) => {
-  const response = await controllers.route.getRoute(req)
-  res.status(response.status).send(response.body)
-})
-
-app.post('/route', corsMiddleware, authMiddleware, async (req: Request, res: Response) => {
-  const response = await controllers.route.addRoutePoint(req)
-  res.status(response.status).send(response.body)
-})
-
-app.delete('/route', corsMiddleware, authMiddleware, async (req: Request, res: Response) => {
-  const response = await controllers.route.deleteRoutePoint(req)
-  res.status(response.status).send(response.body)
-})
-
 app.get('/user', corsMiddleware, authMiddleware, async(req: Request, res: Response) => {
   const response = await controllers.user.getUser(req)
   res.status(response.status).send(response.body)

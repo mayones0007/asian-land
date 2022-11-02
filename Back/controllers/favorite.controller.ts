@@ -17,7 +17,7 @@ export class FavoriteController {
     await models.favorite.deleteFavorite(favorite)
     return {
       status: 200,
-      body: { message: 'Место удалено из избранного' },
+      body: { message: 'Place removed from favorites' },
     }
   }
   async addFavorite(req: Request): Promise<AppResponse> {
@@ -25,7 +25,7 @@ export class FavoriteController {
     await models.favorite.addFavorite(favorite)
     return {
       status: 200,
-      body: { message: 'Место добавлено в избранное' },
+      body: { message: 'Place added in favorites' },
     }
   }
 }
