@@ -23,16 +23,22 @@ export class RoomModel {
         return rooms
       })
   }
-  async addRoom(room: NewRoom): Promise<number> {
+  async addRoom(room: NewRoom, role: string): Promise<number> {
+    if (role !== 'admin') {
+      await knexService('places').where({ id: room.placeId }).update({ isAccepted: null }).catch((err) => console.log(err))
+    }
     return await knexService('rooms').insert(room)
       .then((id) => {
         return id[0]
       })
   }
-  async editRoom(room: Room): Promise<void> {
+  async editRoom(room: Room, role: string): Promise<void> {
     const roomBody = (({ id, ...o }) => o)(room)
     const id = room.id
     await knexService('rooms').where({ id }).update(roomBody).catch((err) => console.log(err))
+    if (role !== 'admin') {
+      await knexService('places').where({id: room.placeId}).update({isAccepted: null}).catch((err) => console.log(err))
+    }
   }
   async deleteRoom(id: string): Promise<void> {
     const promises = []

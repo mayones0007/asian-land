@@ -3,9 +3,9 @@ import { compressAndRenamePicture } from "../../services/file.service"
 
 export const actions = {
 
-  async getPlaces({ commit }) {
+  async getPlaces({ commit }, filter) {
     try {
-      const response = await (await axiosInstance.get('places'))
+      const response = await (await axiosInstance.get('places', { params: { filter } }))
       const places = response.data
       commit("setPlaces", response.data)
       const regions = [...places.map((place) => place.region), ...places.map((place) => place.city)]
@@ -114,6 +114,7 @@ export const actions = {
     try {
       const formData = new FormData()
       formData.append('place', JSON.stringify(newPlace.place))
+      formData.append('features', JSON.stringify(newPlace.features))
       const files = []
       Object.values(newPlace.files).forEach(file => {
         files.push(compressAndRenamePicture(file))
@@ -152,13 +153,14 @@ export const actions = {
     }
   },
 
-  async editPlace({ dispatch }, inputs) {
+  async editPlace({ dispatch }, editPlace) {
     try {
       const formData = new FormData()
-      formData.append('place', JSON.stringify(inputs[0]))
+      formData.append('place', JSON.stringify(editPlace.place))
+      formData.append('features', JSON.stringify(editPlace.features))
       const files = []
-        if(inputs.length > 1) {
-        Object.values(inputs[1]).forEach((file) => {
+        if(editPlace.files) {
+          Object.values(editPlace.files).forEach((file) => {
           files.push(compressAndRenamePicture(file))
         })
       }
@@ -173,23 +175,23 @@ export const actions = {
     }
   },
 
-  async editRoom({ dispatch }, inputs) {
+  async editRoom({ dispatch }, editRoom) {
     try {
       const formData = new FormData()
-      formData.append('room', JSON.stringify(inputs[0]))
-      formData.append('features', JSON.stringify(inputs[1]))
-      formData.append('placeId', JSON.stringify(inputs[2]))
+      formData.append('room', JSON.stringify(editRoom.room))
+      formData.append('features', JSON.stringify(editRoom.features))
+      formData.append('placeId', JSON.stringify(editRoom.placeId))
       const files = []
-      if (inputs.length > 3) {
-        Object.values(inputs[3]).forEach((file) => {
+      if (editRoom.files) {
+        Object.values(editRoom.files).forEach((file) => {
           files.push(compressAndRenamePicture(file))
         })
       }
       Promise.all(files).then(async (list) => {
         list.forEach(file => formData.append('images', file))
         await axiosInstance.patch('room', formData, { headers: { 'Content-Type': 'multipart/form-data' } })
-        dispatch("getRooms", inputs[2])
-        dispatch("getFeatures", {placeId: inputs[2]})
+        dispatch("getRooms", editRoom.placeId)
+        dispatch("getFeatures", { placeId: editRoom.placeId })
       })
     }
     catch (e) {
@@ -206,10 +208,10 @@ export const actions = {
     }
   },
 
-  async deleteRoom({ dispatch }, inputs) {
+  async deleteRoom({ dispatch }, room) {
     try {
-      await axiosInstance.delete('room', { params: { id: inputs[0] } })
-      dispatch("getRooms", inputs[1])
+      await axiosInstance.delete('room', { params: { id: room.id } })
+      dispatch("getRooms", room.placeId)
     } catch (e) {
       console.log("Ошибка HTTP: " + e)
     }

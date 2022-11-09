@@ -76,9 +76,9 @@ export default {
 <style scoped lang="scss">
 
 .route-point {
-  margin: 15px 0;
+  margin-bottom: 15px;
   padding: 20px;
-  border-radius: 20px;
+  border-radius: 10px;
   background-color:aliceblue;
   height: 40px;
   display: grid;

@@ -22,9 +22,9 @@ export const authMiddleware = function (req: Request, res: Response, next: NextF
         req.user = { userId: decoded.userId, role: decoded.role }
         next()
       } catch (e) {
-        return res.status(401).send({ message: "Для продолжения авторизуйтесь" })
+        return res.status(401).send({ message: "log in to continue" })
       }
     } else {
-      return res.status(400).send({ message: "Для продолжения авторизуйтесь" })
+      return res.status(400).send({ message: "log in to continue" })
     }
 }

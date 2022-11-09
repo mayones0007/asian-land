@@ -27,9 +27,8 @@ export class FeatureModel {
         return features
       })
   }
-  async editFeatures(features: Feature[]): Promise<void> {
-    const roomId = features[0].roomId
-    await knexService('features').where({ roomId }).del()
+  async editFeatures(features: Feature[], dbQuery: DbQuery): Promise<void> {
+    await knexService('features').where(dbQuery).del()
     await knexService('features').insert(features).catch((err) => console.log(err))
   }
 }

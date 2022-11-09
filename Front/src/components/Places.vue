@@ -6,45 +6,59 @@
     </div>
     <MyButton
       v-if="!isDesktop"
-      title="Фильтры"
+      title="Filters"
       :icon="'filter.svg'"
       class="places__filters-button"
       @click="toggleFiltersSize"
     />
-    <div v-if="isFullSizeFilters | isDesktop" class="places__filters" :class="{'places__filters-mobile': !isDesktop}">
-      <Select
-        :name="'Category'"
-        :fieldName="'category'"
-      />
-    </div>
-    <div class="page">
-      <RoutePoint
-        v-for="place in filteredPlaces"
-        :showHeart="true"
-        :key="place.id"
-        :FullSize="true"
-        :routePoint="place"
-        buttonIcon="house.svg"
-        buttonText="Book It"
-      />
+    <div class="page" :class="{'page-mobile': !isDesktop}">
+      <div v-if="this.isFullSizeFilters || isDesktop" class="filters">
+        <Select
+          :name="'Category'"
+          :fieldName="'category'"
+        />
+        <div class="filters__item">
+        <h2>Facilities</h2>
+        <div v-for="feature in features" :key="feature">
+          <input type="checkbox" :id="feature" v-model="filter[feature]">
+          <label :for="feature">{{feature}}</label>
+        </div>
+        </div>
+        <MyButton
+          title="Search"
+          @click="getPlaces"
+        />
+      </div>
+      <div>
+        <RoutePoint
+          v-for="place in filteredPlaces"
+          :showHeart="true"
+          :key="place.id"
+          :FullSize="true"
+          :routePoint="place"
+          buttonIcon="house.svg"
+          buttonText="Book It"
+        />
+      </div>
     </div>
   </div>
 </template>
 
 <script>
 import RoutePoint from './CustomComponents/RoutePoint.vue'
-import Select from './CustomComponents/Select.vue'
 import MyButton from './CustomComponents/MyButton.vue'
+import Select from './CustomComponents/Select.vue'
 
 export default {
   components: {
     RoutePoint,
-    Select,
     MyButton,
+    Select
   },
   data(){
     return {
       isFullSizeFilters: false,
+      filter: {}
     }
   },
   computed: {
@@ -53,6 +67,9 @@ export default {
     },
     filteredPlaces() {
       return this.$store.state.placesModule.filteredPlaces
+    },
+    features() {
+      return this.$store.state.placesModule.featuresList
     },
     welcomeImage() {
       if (this.selectedRegion) {
@@ -67,27 +84,32 @@ export default {
   },
   methods: {
     toggleFiltersSize() {
-      this.isFullSizeFilters = !this.isFullSizeFilters;
+      this.isFullSizeFilters = !this.isFullSizeFilters
     },
+    getPlaces() {
+      this.$store.dispatch("getPlaces", this.filter)
+    }
   },
   created() {
     this.$store.dispatch("getPlaces")
+    this.$store.dispatch("getFeaturesList")
   }
 }
 </script>
 
 <style lang="scss" scoped>
 .page {
-  margin: 3%;
+  margin: 20px 3%;
+  display: grid;
+  grid-template-columns: 300px 1fr;
+  align-items: start;
+  gap: 20px;
+  &-mobile {
+    grid-template-columns: 1fr;
+    margin: 0px 3%;
+  }
 }
 
-.places__gallery {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 15px;
-  padding: 20px 0px;
-}
 .welcome {
   position:relative;
   height: 450px;
@@ -114,21 +136,25 @@ export default {
   font-weight: 900;
 }
 
-.places__filters {
-  @include panel(to bottom);
-  font-weight: 500;
-  color: rgb(105, 105, 105);
-  &-mobile {
-    flex-direction: column;
-    gap: 20px;
-    padding: 20px;
-  }
-  &-button {
-    margin-top: 20px;
-  }
-  .calendar {
-    width: 230px;
-    z-index: 1;
-  }
+.filters {
+  display: grid;
+  box-sizing: border-box;
+  top: 20px;
+  gap: 15px;
+  padding: 20px;
+  background: linear-gradient(45deg, rgb(235, 246, 255), rgb(207, 233, 255));
+  border: solid rgb(240, 240, 240) 1px;
+  border-radius: 10px;
+  font-weight: 300;
+}
+
+.filters__item {
+  display: grid;
+  width: 100%;
+  justify-items: start;
+}
+
+.places__filters-button {
+  margin: 10px 0;
 }
 </style>

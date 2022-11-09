@@ -21,9 +21,10 @@ export class RoomController {
       const files = req.files.images
       const placeId = JSON.parse(req.body.placeId)
       room.placeId = placeId
-      const roomId = await models.room.addRoom(room)
+      const role = req.user.role
+      const roomId = await models.room.addRoom(room, role)
       features.forEach((feature: Feature) => feature.roomId = roomId)
-      await models.feature.editFeatures(features)
+      await models.feature.editFeatures(features, { roomId })
       await models.picture.savePictures(placeId, roomId, files)
       fileService.saveFiles('img', files)
       return {
@@ -43,8 +44,9 @@ export class RoomController {
     const roomId = room.id
     const placeId = JSON.parse(req.body.placeId)
     room.placeId = placeId
-    await models.room.editRoom(room)
-    await models.feature.editFeatures(features)
+    const role = req.user.role
+    await models.room.editRoom(room, role)
+    await models.feature.editFeatures(features, { roomId })
     if (req.files) {
       const files = req.files.images
       fileService.saveFiles('img', files)

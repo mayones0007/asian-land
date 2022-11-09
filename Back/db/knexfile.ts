@@ -1,7 +1,7 @@
 const path = require('path');
 // Update with your config settings.
 
-export const knexConfig= {
+const knexConfig= {
 
   development: {
     client: 'sqlite3',
@@ -15,3 +15,5 @@ export const knexConfig= {
   }
 
 };
+
+export default knexConfig

@@ -10,7 +10,7 @@ export interface NewPlace {
   time: number,
   description: string,
   coords: string,
-  isAccepted: number,
+  isAccepted: number | null,
   createdAt: Date,
 }
 
@@ -64,8 +64,11 @@ export class PlaceModel {
         return id[0]
       })
   }
-  async editPlace(place: Place): Promise<void> {
+  async editPlace(place: Place, role: string): Promise<void> {
     const placeBody = (({ id, ...o }) => o)(place)
+    if (role !== 'admin') {
+      placeBody.isAccepted = null
+    }
     const id = place.id
     await knexService('places').where({ id }).update(placeBody).catch((err) => console.log(err))
   }

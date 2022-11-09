@@ -5,23 +5,30 @@
         :pictures="this.currentPictures"
       />
       <SavePanel v-if="!isDesktop"/>
+      <h2 v-if="!isDesktop">Facilities</h2>
+      <div class="features">
+        <div v-for="feature in placeFeatures" :key="feature.name" class="feature">
+          {{feature.name}}
+        </div>
+      </div>
+      <h2 v-if="!isDesktop">Description</h2>
       <div class="description-text">{{currentPlace.description}}</div>
       <h2>Rooms</h2>
       <Rooms
         v-for="room in currentRooms"
         :key="room.id"
         :room="room"
-        buttonText="Reserve"
+        buttonText="Reserve room"
       />
       <div class="review">
         <textarea 
           class="review__input"
           type="text"
-          placeholder="Review text"
+          placeholder="Review"
           v-model="inputValue"
         />
         <div class="review__buttons" :class="{'review__buttons-mobile': !isDesktop}">
-          <div class="raiting">Your assessment
+          <div class="raiting">Raiting
             <img
               v-for='star in 5' :key="'star'+star"
               :src="`${$baseUrl}/icons/star.svg`"
@@ -77,13 +84,16 @@ export default {
     currentRooms() {
       return this.$store.state.placesModule.rooms
     },
+    placeFeatures() {
+      return this.$store.state.placesModule.features.filter(feature => feature.roomId === null)
+    },
     currentReviews() {
       return this.$store.state.placesModule.reviews
     },
     currentPictures() {
       return this.$store.state.placesModule.pictures.map(picture => picture.fileName)
     },
-    isDesktop(){
+    isDesktop() {
       return this.$store.state.appModule.isDesktop
     },
   },
@@ -114,6 +124,7 @@ export default {
   &-mobile {
     padding: 3%;
     grid-template-columns: 1fr;
+    text-align: start;
   }
 }
 
@@ -165,10 +176,30 @@ export default {
   display: flex;
   gap: 15px;
   justify-content: space-between;
-  padding: 15px 15px 15px 0;
+  padding: 15px 20px 20px 0;
   &-mobile {
     flex-direction: column;
-    padding: 15px 0px 0 0px;
+    padding-top: 15px 0px 0 0px;
   }
+}
+.features {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  margin: 10px 0;
+}
+
+.feature {
+  display: flex;
+  gap: 5px;
+  padding: 8px;
+  border-radius: 5px;
+  border: solid rgb(240, 240, 240) 1px;
+  align-items: center;
+  white-space: nowrap;
+  font-weight: 300;
+}
+h2 {
+  margin: 10px 0 5px 0;
 }
 </style>

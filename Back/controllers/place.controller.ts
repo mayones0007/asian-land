@@ -1,6 +1,7 @@
 import { Request } from "express"
 import { models } from "../models/index"
 import { Place } from "../models/place.model"
+import { Feature } from "../models/feature.model"
 import { AppResponse } from "./response.model"
 import { fileService } from "../services/file.service"
 
@@ -33,10 +34,13 @@ export class PlaceController {
   async addPlace(req: Request): Promise<AppResponse> {
     if (req.files) {
       const place = JSON.parse(req.body.place)
+      const features = JSON.parse(req.body.features)
       const files = req.files.images
       const roomId = null
       place.user = req.user.userId
       const placeId = await models.place.addPlace(place)
+      features.forEach((feature: Feature) => feature.placeId = placeId)
+      await models.feature.editFeatures(features, { placeId })
       fileService.saveFiles('img', files)
       models.picture.savePictures(placeId, roomId, files)
       return {
@@ -52,7 +56,11 @@ export class PlaceController {
   }
   async editPlace(req: Request): Promise<AppResponse> {
     const place = JSON.parse(req.body.place)
-    await models.place.editPlace(place)
+    const features = JSON.parse(req.body.features)
+    const placeId = place.id
+    const role = req.user.role
+    await models.place.editPlace(place, role)
+    await models.feature.editFeatures(features, { placeId , roomId: null})
     if (req.files) {
       const files = req.files.images
       fileService.saveFiles('img', files)

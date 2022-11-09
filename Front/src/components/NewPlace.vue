@@ -44,6 +44,22 @@
         <label for="isAccepted">Show</label>
         <input type="checkbox" id="isAccepted" v-model="place.isAccepted" true-value=1 false-value=0>
       </div>
+      <div class="form__item">
+        <label for="features">Features</label>
+        <div class="features">
+          <div v-for="feature in this.placeFeatures" :key="feature" class="feature feature-light">
+            {{feature.name}}
+            <img :src="`${$baseUrl}/icons/close.svg`" alt="close" class="select__reset-button" @click="deletePlaceFeature(feature, this.placeFeatures)">
+          </div>
+          <div class="features__input">
+            <input class="form__input form__input-features" id="features" type="text" list="featuresList" v-model="feature">
+            <MyButton title="Add" :noLeftRadius="true" @click="addPlaceFeature(this.placeFeatures)"/>
+          </div>
+          <datalist id="featuresList">
+            <option v-for="feature in featuresList" :key="feature">{{feature}}</option>
+          </datalist>
+        </div>
+      </div>
       <textarea class="form__textarea" type="text" placeholder="Description" v-model="place.description"></textarea>
     </div>
 
@@ -73,11 +89,11 @@
         <div class="features">
           <div v-for="feature in this.features" :key="feature" class="feature feature-light">
             {{feature.name}}
-            <img :src="`${$baseUrl}/icons/close.svg`" alt="close" class="select__reset-button" @click="deleteFeature(feature)">
+            <img :src="`${$baseUrl}/icons/close.svg`" alt="close" class="select__reset-button" @click="deleteFeature(feature, this.features)">
           </div>
           <div class="features__input">
             <input class="form__input form__input-features" id="features" type="text" list="featuresList" v-model="feature">
-            <MyButton title="Add" :noLeftRadius="true" @click="addFeature()"/>
+            <MyButton title="Add" :noLeftRadius="true" @click="addFeature(this.features)"/>
           </div>
           <datalist id="featuresList">
             <option v-for="feature in featuresList" :key="feature">{{feature}}</option>
@@ -152,6 +168,7 @@ export default {
     place: {},
     room: {},
     features: [],
+    placeFeatures: [],
     hiddenOnly: false,
     addedPictures: [],
     isLoading: false,
@@ -173,7 +190,7 @@ export default {
       return this.$store.state.appModule.isDesktop
     },
     currentPictures() {
-      return this.isNewRoom ? [] : this.$store.state.placesModule.pictures.filter(picture => 
+      return this.isNewRoom || this.isNewObject ? [] : this.$store.state.placesModule.pictures.filter(picture => 
         this.room.id ? picture.roomId === this.room.id : picture.roomId === null).map(picture => picture.fileName)
     },
     isAdmin(){
@@ -204,11 +221,10 @@ export default {
     },
     async addNewPlace(){
       this.isLoading = true
-      const status = await this.$store.dispatch('addNewPlace', {place: this.place, files: this.$refs.file.files})
+      const status = await this.$store.dispatch('addNewPlace', {place: this.place, features: this.placeFeatures, files: this.$refs.file.files})
       if (status === 200) {
         this.$store.dispatch("getMyPlaces")
-        this.place = {}
-        this.addedPictures = []
+        this.clearPlace()
         this.isNewObject = false
       }
       this.isLoading = false
@@ -217,8 +233,7 @@ export default {
       this.isLoading = true
       const status = await this.$store.dispatch('addNewRoom', {room: this.room, placeId: this.place.id, features: this.features, files: this.$refs.file.files})
       if (status === 200) {
-        this.room = {}
-        this.addedPictures = []
+        this.clearRoom()
         this.isNewRoom = false
       }
       this.isLoading = false
@@ -232,15 +247,14 @@ export default {
     createNewObject() {
       window.scroll(0, 0)
       this.addedPictures = []
-      this.$store.commit('setPictures', [])
+      this.placeFeatures = []
       this.isNewObject = true
     },
     createNewRoom() {
       window.scroll(0, 0)
-      this.$store.dispatch("getFeaturesList")
-      this.isNewRoom = true
       this.addedPictures = []
       this.features = []
+      this.isNewRoom = true
     },
     addFeature(){
       if(!this.features.find(feature => feature.name === this.feature) && this.feature) { 
@@ -251,60 +265,61 @@ export default {
     deleteFeature(feature){
       this.features.splice(this.features.indexOf(feature), 1)
     },
+    addPlaceFeature(){
+      if(!this.placeFeatures.find(feature => feature.name === this.feature) && this.feature) { 
+        this.placeFeatures.push({roomId: this.room.id ,name:this.feature, placeId: this.place.id}) 
+        }
+      this.feature = ''
+    },
+    deletePlaceFeature(feature){
+      this.placeFeatures.splice(this.placeFeatures.indexOf(feature), 1)
+    },
     editPlace(){
       this.isLoading = true
       delete this.place.picture
-      const pictures = this.$refs.file.files
       if (this.addedPictures.length){
-        this.$store.dispatch('editPlace', [this.place, pictures])
+        this.$store.dispatch('editPlace', {place: this.place, features: this.placeFeatures, files: this.$refs.file.files})
       } else {
-      this.$store.dispatch('editPlace', [this.place])
+      this.$store.dispatch('editPlace', {place: this.place, features: this.placeFeatures})
       }
-      this.place = {}
-      this.addedPictures = []
-      this.$store.commit('setPictures', [])
+      this.clearPlace()
       this.isLoading = false
     },
     editRoom(){
       this.isLoading = true
-      const pictures = this.$refs.file.files
       if (this.addedPictures.length){
-        this.$store.dispatch('editRoom', [this.room, this.features, this.place.id, pictures])
+        this.$store.dispatch('editRoom', {room: this.room, placeId: this.place.id, features: this.features, files: this.$refs.file.files})
       } else {
-        this.$store.dispatch('editRoom', [this.room, this.features, this.place.id,])
+        this.$store.dispatch('editRoom', {room: this.room, placeId: this.place.id, features: this.features})
       }
-      this.room = {}
-      this.addedPictures = []
-      this.$store.commit('setPictures', [])
+      this.clearRoom()
       this.isLoading = false
     },
     deletePlace(){
       this.$store.dispatch('deletePlace', this.place.id)
-      this.$store.commit('setPictures', [])
-      this.place = {}
+      this.clearPlace()
     },
     deleteRoom(){
-      const inputs = [this.room.id, this.place.id]
-      this.$store.dispatch('deleteRoom', inputs)
-      this.$store.commit('setPictures', [])
-      this.room = {}
+      this.$store.dispatch('deleteRoom', {id: this.room.id, placeId: this.place.id})
+      this.clearRoom()
     },
-    getPlace(place) {
+    async getPlace(place) {
       this.place = place
-      this.$store.dispatch("getRooms", this.place.id)
-      this.$store.dispatch("getFeatures", {placeId: this.place.id})
+      await this.$store.dispatch("getRooms", this.place.id)
+      await this.$store.dispatch("getFeatures", {placeId: this.place.id})
+      await this.$store.dispatch("getFeaturesList")
+      this.placeFeatures = this.$store.state.placesModule.features.filter(feature => feature.roomId === null)
     },
     getRoom(room) {
       this.room = room
-      this.$store.dispatch("getFeaturesList")
       this.features = this.$store.state.placesModule.features.filter(feature => feature.roomId === room.id)
     },
     addPlacePicture(){
       const files = this.$refs.file.files
       Array.from(files).forEach(file => {
-          const reader = new FileReader()
-          reader.onload = () => {
-          this.addedPictures.push(reader.result)
+        const reader = new FileReader()
+        reader.onload = () => {
+        this.addedPictures.push(reader.result)
         }
         reader.readAsDataURL(file)
       })
@@ -321,16 +336,20 @@ export default {
     },
     cancel() {
       if (this.room.id || this.isNewRoom) {
-        this.room = {}
         this.isNewRoom = false
-        this.addedPictures = []
-      } else {
-        if (this.place.id || this.isNewObject) {
-          this.place = {}
-          this.isNewObject = false
-          this.addedPictures = []
-        }
+        this.clearRoom()
+      } else if (this.place.id || this.isNewObject) {
+        this.isNewObject = false
+        this.clearPlace()
       }
+    },
+    clearRoom() {
+      this.room = {}
+      this.addedPictures = []
+    },
+    clearPlace() {
+      this.room = {}
+      this.addedPictures = []
     }
   },
   created() {

@@ -11,9 +11,10 @@
       <div>{{field.name}}</div>
       <a v-if="field.type === 'email'" class= "link" :href="`mailto:${currentPlace[field.fieldName]}`">{{currentPlace[field.fieldName]}}</a>
       <a v-else-if="field.type === 'tel'" class= "link" :href="`tel:${currentPlace[field.fieldName]}`">{{currentPlace[field.fieldName]}}</a>
+      <a v-else-if="field.type === 'url'" class= "link" :href="`http://${currentPlace[field.fieldName]}`" target="_blank">{{currentPlace[field.fieldName]}}</a>
       <div v-else>{{currentPlace[field.fieldName]}}</div>
     </div>
-    <div class="save-panel__item">
+    <div v-if="currentPlace.raiting" class="save-panel__item">
       <div>Raiting</div>
       <div class="raiting" v-if="currentPlace.raiting">
         <img
@@ -142,7 +143,7 @@ export default {
 
 .save-panel__buttons-mobile {
   position: fixed;
-  padding: 20px;
+  padding: 20px 20px 30px 20px;
   left: 0;
   bottom: 0;
   background: linear-gradient(to bottom, rgb(255, 255, 255), rgb(242, 242, 242));

@@ -68,9 +68,10 @@ export const placeFields = [
   {
     fieldName: 'site',
     name: 'Site',
-    type: 'text',
+    type: 'url',
     autofull: false,
     required: false,
+    placeholder: "example.com",
     info: true,
   },
   {
@@ -86,7 +87,15 @@ export const placeFields = [
     name: 'Bilding',
     type: 'text',
     autofull: false,
-    required: true,
+    required: false,
+    info: true,
+  },
+  {
+    fieldName: 'block',
+    name: 'Block',
+    type: 'text',
+    autofull: false,
+    required: false,
     info: true,
   },
 ]
