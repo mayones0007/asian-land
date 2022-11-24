@@ -25,7 +25,7 @@
         </div>
         </div>
         <MyButton
-          title="Search"
+          title="Filter"
           @click="getPlaces"
         />
       </div>
@@ -36,8 +36,7 @@
           :key="place.id"
           :FullSize="true"
           :routePoint="place"
-          buttonIcon="house.svg"
-          buttonText="Book It"
+          buttonText="Reserve"
         />
       </div>
     </div>

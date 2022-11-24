@@ -5,13 +5,13 @@
         :pictures="this.currentPictures"
       />
       <SavePanel v-if="!isDesktop"/>
-      <h2 v-if="!isDesktop">Facilities</h2>
+      <h2 v-if="!isDesktop && placeFeatures.length">Facilities</h2>
       <div class="features">
         <div v-for="feature in placeFeatures" :key="feature.name" class="feature">
           {{feature.name}}
         </div>
       </div>
-      <h2 v-if="!isDesktop">Description</h2>
+      <h2 v-if="!isDesktop && currentPlace.description">Description</h2>
       <div class="description-text">{{currentPlace.description}}</div>
       <h2>Rooms</h2>
       <Rooms
@@ -118,7 +118,7 @@ export default {
 .page {
   padding: 20px 40px;
   display: grid;
-  grid-template-columns: 1fr 320px;
+  grid-template-columns: 1fr 350px;
   align-items: start;
   gap: 20px;
   &-mobile {

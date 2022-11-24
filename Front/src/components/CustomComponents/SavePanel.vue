@@ -9,9 +9,9 @@
     </div>
     <div v-for="field in infoFields" :key="field.name" class="save-panel__item">
       <div>{{field.name}}</div>
-      <a v-if="field.type === 'email'" class= "link" :href="`mailto:${currentPlace[field.fieldName]}`">{{currentPlace[field.fieldName]}}</a>
-      <a v-else-if="field.type === 'tel'" class= "link" :href="`tel:${currentPlace[field.fieldName]}`">{{currentPlace[field.fieldName]}}</a>
-      <a v-else-if="field.type === 'url'" class= "link" :href="`http://${currentPlace[field.fieldName]}`" target="_blank">{{currentPlace[field.fieldName]}}</a>
+      <a v-if="field.type === 'email'" class="link" :href="`mailto:${currentPlace[field.fieldName]}`">{{currentPlace[field.fieldName]}}</a>
+      <a v-else-if="field.type === 'tel'" class="link" :href="`tel:${currentPlace[field.fieldName]}`">{{currentPlace[field.fieldName]}}</a>
+      <a v-else-if="field.type === 'url'" class="link" :href="`http://${currentPlace[field.fieldName]}`" target="_blank">{{urlPrepare(currentPlace[field.fieldName])}}</a>
       <div v-else>{{currentPlace[field.fieldName]}}</div>
     </div>
     <div v-if="currentPlace.raiting" class="save-panel__item">
@@ -88,13 +88,16 @@ export default {
       return this.currentPlace.coords ? this.currentPlace.coords.split(',') : undefined
     },
     infoFields() {
-      return this.placeFields.filter((field) => field.info && this.currentPlace[field.fieldName])
+      return this.placeFields.reduce((acc, group) => [...acc, ...group.fields.filter((field) => field.info && this.currentPlace[field.fieldName])],[])
     },
   },
   methods: {
     mapInitialized(e){
       this.myMap = e
     },
+    urlPrepare(url) {
+      return url.match(/^(?:https?:\/\/)?(?:[^@\n]+@)?(?:www\.)?([^:/\n?]+)/igm)[0]
+    }
   },
   onMounted(){
     const startDate = new Date()
@@ -117,8 +120,9 @@ export default {
   background: linear-gradient(45deg, rgb(235, 246, 255), rgb(207, 233, 255));
   border: solid rgb(240, 240, 240) 1px;
   border-radius: 5px;
-  width: 320px;
+  width: 350px;
   font-weight: 300;
+  text-align: start;
 }
 
 .save-panel__info-mobile {

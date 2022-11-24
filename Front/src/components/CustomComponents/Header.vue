@@ -1,7 +1,6 @@
 <template>
   <div class="header">
     <router-link :to="{name: $options.routeNames.places}" class="logo">
-      <img class="logo__icon" :src="`${$baseUrl}/icons/logo.svg`" alt="asian.land">
       <div class="logo__name">asian.land</div>
     </router-link>
     <Search

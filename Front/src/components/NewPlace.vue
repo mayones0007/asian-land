@@ -21,44 +21,48 @@
     <MyButton v-if="!this.isNewObject && !place.id" class="button" title="Create new object" @click="createNewObject"/>
     
     <div v-if="isShowForm" class="form" :class="{'form-mobile': !isDesktop}">
-      <h2 class="form__header">Object</h2>
-      <div v-for="field in this.placeFields" :key="field.name" class="form__item">
-        <label :for="field.fieldName">{{field.name}}{{field.required ? '*' : ''}}</label>
-        <div>
-          <input 
-            class="form__input"
-            :id="field.fieldName"
-            v-model="place[field.fieldName]" 
-            :placeholder="field.placeholder"
-            :type="field.type"
-            :list="field.name"
-            @blur="validate(field, this.place)"
-          >
-          <datalist v-if="field.autofull" :id="field.name">
-            <option v-for="option in options(field.fieldName)" :key="option">{{option}}</option>
-          </datalist>
-          <div v-if="this.validation[field.fieldName]" class="input-text-wrong">{{this.validation[field.fieldName]}}</div>
+      <div v-for="group in this.placeFields" :key="group.groupName" class="form">
+        <h2 class="form__header">{{group.groupName}}</h2>
+        <div v-for="field in group.fields" :key="field.name">
+          <div v-if="field.fieldName === 'features'" class="form__item">
+            <label for="features">Features</label>
+            <div class="features">
+              <div v-for="feature in this.placeFeatures" :key="feature" class="feature feature-light">
+                {{feature.name}}
+                <img :src="`${$baseUrl}/icons/close.svg`" alt="close" class="select__reset-button" @click="deletePlaceFeature(feature, this.placeFeatures)">
+              </div>
+              <div class="features__input">
+                <input class="form__input form__input-features" id="features" type="text" list="featuresList" v-model="feature">
+                <MyButton title="Add" :noLeftRadius="true" @click="addPlaceFeature(this.placeFeatures)"/>
+              </div>
+              <datalist id="featuresList">
+                <option v-for="feature in featuresList" :key="feature">{{feature}}</option>
+              </datalist>
+            </div>
+          </div>
+          <div v-else class="form__item">
+            <label :for="field.fieldName">{{field.name}}{{field.required ? '*' : ''}}</label>
+            <div>
+              <input 
+                class="form__input"
+                :id="field.fieldName"
+                v-model="place[field.fieldName]" 
+                :placeholder="field.placeholder"
+                :type="field.type"
+                :list="field.name"
+                @blur="validate(field, this.place)"
+              >
+              <datalist v-if="field.autofull" :id="field.name">
+                <option v-for="option in options(field.fieldName)" :key="option">{{option}}</option>
+              </datalist>
+              <div v-if="this.validation[field.fieldName]" class="input-text-wrong">{{this.validation[field.fieldName]}}</div>
+            </div>
+          </div>
         </div>
       </div>
       <div v-if="isAdmin" class="form__item">
         <label for="isAccepted">Show</label>
         <input type="checkbox" id="isAccepted" v-model="place.isAccepted" true-value=1 false-value=0>
-      </div>
-      <div class="form__item">
-        <label for="features">Features</label>
-        <div class="features">
-          <div v-for="feature in this.placeFeatures" :key="feature" class="feature feature-light">
-            {{feature.name}}
-            <img :src="`${$baseUrl}/icons/close.svg`" alt="close" class="select__reset-button" @click="deletePlaceFeature(feature, this.placeFeatures)">
-          </div>
-          <div class="features__input">
-            <input class="form__input form__input-features" id="features" type="text" list="featuresList" v-model="feature">
-            <MyButton title="Add" :noLeftRadius="true" @click="addPlaceFeature(this.placeFeatures)"/>
-          </div>
-          <datalist id="featuresList">
-            <option v-for="feature in featuresList" :key="feature">{{feature}}</option>
-          </datalist>
-        </div>
       </div>
       <textarea class="form__textarea" type="text" placeholder="Description" v-model="place.description"></textarea>
     </div>
@@ -110,9 +114,9 @@
           <img :src="`${$baseUrl}/img/${picture}`" class="gallery__item-image">
           <img :src="`${$baseUrl}/icons/trash.svg`" class="gallery__item-button" @click="deletePicture(picture)">
         </div>
-        <div v-for="picture in addedPictures" :key="picture" class="gallery__item">
+        <div v-for="(picture, index) in addedPictures" :key="picture" class="gallery__item">
           <img :src="picture" class="gallery__item-image">
-          <img :src="`${$baseUrl}/icons/trash.svg`" class="gallery__item-button" @click="deleteNewPicture(picture)">
+          <img :src="`${$baseUrl}/icons/trash.svg`" class="gallery__item-button" @click="deleteNewPicture(index)">
         </div>
         <input class="form__picture" type="file" id="file" ref="file" multiple accept="image/*" @change="addPlacePicture()">
         <label for="file" class="gallery__item">
@@ -171,6 +175,7 @@ export default {
     placeFeatures: [],
     hiddenOnly: false,
     addedPictures: [],
+    files: [],
     isLoading: false,
     feature: '',
     isNewObject: false,
@@ -221,7 +226,7 @@ export default {
     },
     async addNewPlace(){
       this.isLoading = true
-      const status = await this.$store.dispatch('addNewPlace', {place: this.place, features: this.placeFeatures, files: this.$refs.file.files})
+      const status = await this.$store.dispatch('addNewPlace', {place: this.place, features: this.placeFeatures, files: this.files})
       if (status === 200) {
         this.$store.dispatch("getMyPlaces")
         this.clearPlace()
@@ -231,7 +236,7 @@ export default {
     },
     async addNewRoom(){
       this.isLoading = true
-      const status = await this.$store.dispatch('addNewRoom', {room: this.room, placeId: this.place.id, features: this.features, files: this.$refs.file.files})
+      const status = await this.$store.dispatch('addNewRoom', {room: this.room, placeId: this.place.id, features: this.features, files: this.files})
       if (status === 200) {
         this.clearRoom()
         this.isNewRoom = false
@@ -278,7 +283,7 @@ export default {
       this.isLoading = true
       delete this.place.picture
       if (this.addedPictures.length){
-        this.$store.dispatch('editPlace', {place: this.place, features: this.placeFeatures, files: this.$refs.file.files})
+        this.$store.dispatch('editPlace', {place: this.place, features: this.placeFeatures, files: this.files})
       } else {
       this.$store.dispatch('editPlace', {place: this.place, features: this.placeFeatures})
       }
@@ -288,7 +293,7 @@ export default {
     editRoom(){
       this.isLoading = true
       if (this.addedPictures.length){
-        this.$store.dispatch('editRoom', {room: this.room, placeId: this.place.id, features: this.features, files: this.$refs.file.files})
+        this.$store.dispatch('editRoom', {room: this.room, placeId: this.place.id, features: this.features, files: this.files})
       } else {
         this.$store.dispatch('editRoom', {room: this.room, placeId: this.place.id, features: this.features})
       }
@@ -315,17 +320,18 @@ export default {
       this.features = this.$store.state.placesModule.features.filter(feature => feature.roomId === room.id)
     },
     addPlacePicture(){
-      const files = this.$refs.file.files
-      Array.from(files).forEach(file => {
-        const reader = new FileReader()
-        reader.onload = () => {
-        this.addedPictures.push(reader.result)
+      this.files = [...this.files, ...this.$refs.file.files]
+      Array.from(this.$refs.file.files).forEach(file => {
+          const reader = new FileReader()
+          reader.onload = () => {
+          this.addedPictures.push(reader.result)
         }
         reader.readAsDataURL(file)
       })
     },
-    deleteNewPicture(picture) {
-      this.addedPictures.splice(this.addedPictures.indexOf(picture),1)
+    deleteNewPicture(index) {
+      this.files.splice(index,1)
+      this.addedPictures.splice(index,1)
     },
     deletePicture(picture) {
       this.$store.dispatch("deletePicture", picture)
@@ -348,7 +354,7 @@ export default {
       this.addedPictures = []
     },
     clearPlace() {
-      this.room = {}
+      this.place = {}
       this.addedPictures = []
     }
   },

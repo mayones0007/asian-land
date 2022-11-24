@@ -160,6 +160,7 @@ export default {
   display: grid;
   gap: 20px;
   height: 100%;
+  width: 100%;
 }
 .tag {
   font-weight: 200;

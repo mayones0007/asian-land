@@ -14,7 +14,7 @@ export const validation = (value, type) => {
       case 'lastName':
         return value.length > 1 && value.match(letters) ? '' : 'Last Name is incorrect'
       case 'site':
-        return !value.includes('http://') && value.includes('.') ? '' : 'Site is incorrect'
+        return !value.includes('http') && value.includes('.') ? '' : 'Site is incorrect'
       default:
         return ''
     }

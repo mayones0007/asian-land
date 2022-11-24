@@ -66,7 +66,7 @@ export default {
 .select__input {
   position: relative;
   display: flex;
-  width: 120px;
+  width: 100%;
   gap: 10px;
   justify-content: space-between;
   align-items: center;
