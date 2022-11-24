@@ -159,9 +159,6 @@ export default {
 .gallery-window {
   position: fixed;
   display:flex;
-  width: 80%;
-  min-height: 80vh;
-  max-height: 80vh;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
@@ -170,7 +167,6 @@ export default {
 
 .gallery-window-mobile {
   width: 100%;
-  min-height: 40vh;
   max-height: 100vh;
 }
 
