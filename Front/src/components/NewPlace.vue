@@ -251,12 +251,14 @@ export default {
     },
     createNewObject() {
       window.scroll(0, 0)
+      this.files = []
       this.addedPictures = []
       this.placeFeatures = []
       this.isNewObject = true
     },
     createNewRoom() {
       window.scroll(0, 0)
+      this.files = []
       this.addedPictures = []
       this.features = []
       this.isNewRoom = true
@@ -351,10 +353,12 @@ export default {
     },
     clearRoom() {
       this.room = {}
+      this.files = []
       this.addedPictures = []
     },
     clearPlace() {
       this.place = {}
+      this.files = []
       this.addedPictures = []
     }
   },
